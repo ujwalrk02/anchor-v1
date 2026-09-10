@@ -69,6 +69,6 @@ This repo currently contains the developer docs site: `anchor-docs.html` (single
 - Roadmap view (Phase 1 live Sept 2026, Phase 2 committed Q4 2026, Phase 3 sequenced H1 2027, Under evaluation), chronological Release Notes
 - Single static file using vanilla JS/CSS and IBM Plex Sans/Mono; responsive with collapsible outline
 
-## Use
+## Visit Docs
 
 https://fsit-anchor-v1.vercel.app/
