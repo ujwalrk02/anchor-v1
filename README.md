@@ -1,4 +1,4 @@
-# Anchor — Internal Identity Platform
+# Anchor - Internal Identity Platform
 
 Centralized identity for all internal apps, so teams stop rebuilding login, sessions, password storage, and access control per project.
 
