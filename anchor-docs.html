@@ -655,12 +655,12 @@ function openFbOverlay(pageId, mode){
     </div>
     <div class="fb-dbody">
       <div class="fb-err hidden" id="fb-err"></div>
-      <div class="fb-field">
+      ${isIssue ? `<div class="fb-field">
         <span class="fb-label">Rating</span>
         <div class="fb-rate" id="fb-rate">${ratings.map(r=>`<button class="rate-pill ${r==='none'?'sel':''}" data-r="${r}" onclick="fbSetRating('${r}')">${r.charAt(0).toUpperCase()+r.slice(1)}</button>`).join('')}</div>
-      </div>
+      </div>` : ''}
       <div class="fb-field">
-        <label class="fb-label" for="fb-summary">Summary <span class="fb-req">Required</span></label>
+        <label class="fb-label" for="fb-summary">Summary <span class="fb-req">*</span></label>
         <input type="text" id="fb-summary" placeholder="${isIssue ? 'Brief summary of the problem' : 'Brief summary of your suggestion'}">
       </div>
       <div class="fb-field">
@@ -675,7 +675,7 @@ function openFbOverlay(pageId, mode){
         <div class="fb-file-row"><label class="btn" for="fb-file" style="cursor:pointer">Choose file</label><span id="fb-filename">No file chosen</span><input type="file" id="fb-file" class="hidden" onchange="fbFileChange(this)"></div>
       </div>
       <div class="fb-field">
-        <span class="fb-label">Does this page contain sensitive information? <span class="fb-req">Required</span></span>
+        <span class="fb-label">Does this page contain sensitive information? <span class="fb-req">*</span></span>
         <div class="fb-radio-row" id="fb-sens"><button class="btn" data-v="yes" onclick="fbSetSensitive('yes')">Yes</button><button class="btn" data-v="no" onclick="fbSetSensitive('no')">No</button></div>
       </div>
       <div class="fb-field">
