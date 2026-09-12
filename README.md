@@ -7,7 +7,7 @@ Anchor owns **who a user is and when they may act**. Applications keep ownership
 ## Contents
 
 - `index.html` — public landing page: hero with product snapshot, code samples, capability explorer, and pillar overview.
-- `anchor-docs.html` — developer docs app: full pillar reference, guides, API/SDK pages, roadmap, and release notes.
+- `docs.html` — developer docs app: full pillar reference, guides, API/SDK pages, roadmap, and release notes.
 
 Both are single static files. No build step, no dependencies — open either one in a browser. The landing brand and pillar cards link into the docs; the docs brand links back to the landing page.
 
@@ -88,7 +88,7 @@ Both are single static files. No build step, no dependencies — open either one
 ```bash
 # no install, no build
 open index.html         # start here
-open anchor-docs.html     # full reference
+open docs.html     # full reference
 ```
 
 ## Visit Docs
