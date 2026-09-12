@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anchor — Internal Identity Platform Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1B1F27; --dim:#5B6472; --faint:#8B93A3;
+  --surface:#F7F8FA; --raised:#F0F2F5;
+  --line:#E3E6EB; --line-soft:#EDEFF2;
+  --accent:#045E96; --accent-soft:#E6F1F7; --accent-ink:#034A78;
+  --beta-ink:#93610C; --beta-bg:#FFF4E3; --beta-line:#F2DDAF;
+  --dep-ink:#912018; --dep-bg:#FEF3F2; --dep-line:#FECDCA;
+  --ok:#1F8A5B;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+  --sans:'IBM Plex Sans',ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--sans);font-size:13px;line-height:1.5;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
+.hidden{display:none!important}
+.thin-scroll::-webkit-scrollbar{width:7px;height:7px}
+.thin-scroll::-webkit-scrollbar-track{background:transparent}
+.thin-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+svg{display:block}
+
+/* ---- top bar (compact) ---- */
+.topbar{height:40px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 10px;gap:8px;background:#fff;position:relative;z-index:30}
+.brand{display:flex;align-items:center;gap:6px;flex-shrink:0;cursor:pointer}
+.brand svg{width:17px;height:17px}
+.brand b{font-size:13px;font-weight:600}
+.brand-sub{font-family:var(--mono);font-size:10px;color:var(--faint);padding-left:8px;border-left:1px solid var(--line);white-space:nowrap}
+@media(max-width:760px){.brand-sub{display:none}}
+.spacer{flex:1}
+.ver-wrap{position:relative;flex-shrink:0}
+.ver-pill{font-family:var(--mono);font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:6px;padding:3px 7px;display:flex;align-items:center;gap:5px;cursor:pointer;background:#fff;height:28px}
+.ver-pill:hover{border-color:#C7CCD6}
+.ver-pill .chev{width:10px;height:10px;transition:transform .15s}
+.ver-pill.open .chev{transform:rotate(180deg)}
+.ver-menu{position:absolute;top:calc(100% + 5px);left:0;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.12);min-width:168px;padding:3px;z-index:50}
+.ver-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px;border-radius:6px;font-family:var(--mono);font-size:12px;cursor:pointer}
+.ver-item:hover{background:var(--surface)}
+.ver-tag{font-family:var(--sans);font-size:10px;color:var(--faint);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+.search-pill{flex-shrink:0;display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:6px;padding:4px 8px;color:var(--faint);cursor:pointer;font-size:12px;height:28px}
+.search-pill:hover{border-color:#C7CCD6;color:var(--dim)}
+.search-pill svg{width:13px;height:13px}
+kbd{font-family:var(--mono);font-size:10px;border:1px solid var(--line);background:var(--surface);border-radius:4px;padding:1px 5px;color:var(--faint);white-space:nowrap}
+.topnav{display:flex;gap:1px;flex-shrink:0;max-width:52vw;overflow-x:auto}
+.topnav button{border:0;background:transparent;color:var(--dim);font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer;white-space:nowrap;font-family:var(--sans)}
+.topnav button:hover{background:var(--surface);color:var(--ink)}
+.topnav button.active{background:var(--accent-soft);color:var(--accent-ink)}
+
+/* ---- layout: left nav | content | right outline ---- */
+.layout{display:grid;grid-template-columns:196px minmax(0,1fr) 188px;height:calc(100vh - 40px)}
+.sidebar{border-right:1px solid var(--line);background:var(--surface);overflow-y:auto;padding:8px 6px;font-size:12.5px}
+.side-home{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:5px;font-size:12.5px;font-weight:600;cursor:pointer;margin-bottom:4px}
+.side-home:hover{background:var(--raised)}
+.side-home svg{width:13px;height:13px;color:var(--accent)}
+.nav-group{margin-bottom:1px}
+.nav-sum{list-style:none;display:flex;align-items:center;gap:5px;padding:3px 6px;border-radius:5px;cursor:pointer;user-select:none;color:var(--dim)}
+.nav-sum::-webkit-details-marker{display:none}
+.nav-sum:hover{background:var(--raised);color:var(--ink)}
+.nav-sum.top{font-weight:600;font-size:11.5px}
+.nav-sum.sub{font-weight:500;font-size:12px}
+.nav-sum .caret{width:8px;height:8px;flex-shrink:0;color:var(--faint);transition:transform .15s}
+.nav-group[open] > .nav-sum .caret{transform:rotate(90deg)}
+.nav-children{margin:1px 0 3px 7px;padding-left:5px;border-left:1px solid var(--line)}
+.nav-leaf{display:flex;align-items:center;gap:5px;padding:3px 6px;border-radius:5px;font-size:12px;color:var(--dim);cursor:pointer}
+.nav-leaf:hover{background:var(--raised);color:var(--ink)}
+.nav-leaf.active{background:var(--accent-soft);color:var(--accent-ink);font-weight:500}
+.trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.beta{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--beta-ink);background:var(--beta-bg);border:1px solid var(--beta-line);border-radius:4px;padding:1px 6px;white-space:nowrap}
+.beta-sm{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--beta-ink);background:var(--beta-bg);border:1px solid var(--beta-line);border-radius:4px;padding:0 4px;margin-left:auto;flex-shrink:0}
+.beta-inline{color:var(--faint);font-weight:400;font-size:11px;white-space:nowrap}
+.dep{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--dep-ink);background:var(--dep-bg);border:1px solid var(--dep-line);border-radius:4px;padding:1px 6px;white-space:nowrap}
+.dep-sm{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--dep-ink);background:var(--dep-bg);border:1px solid var(--dep-line);border-radius:4px;padding:0 4px;margin-left:auto;flex-shrink:0}
+.dep-inline{color:var(--faint);font-weight:400;font-size:11px;white-space:nowrap}
+
+.main-scroll{overflow-y:auto;padding:0;display:flex;flex-direction:column;min-height:0}
+.content{max-width:none;width:100%;flex:1 0 auto;padding:16px 20px 28px}
+.outline{border-left:1px solid var(--line);padding:14px 10px 20px 12px;overflow-y:auto;font-size:12px;background:#fff}
+.outline h4{margin:0 0 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:600}
+.outline.empty{display:none}
+#outlineLinks a{display:block;padding:2px 0 2px 8px;border-left:2px solid transparent;color:var(--dim);text-decoration:none;font-size:12px;line-height:1.45;cursor:pointer}
+#outlineLinks a:hover{color:var(--ink)}
+#outlineLinks a.active{color:var(--accent-ink);border-left-color:var(--accent);font-weight:500}
+@media(max-width:1080px){.layout{grid-template-columns:196px minmax(0,1fr)}.outline{display:none}}
+
+/* ---- content typography (compact) ---- */
+.crumb{font-family:var(--mono);font-size:11px;color:var(--faint);margin-bottom:6px}
+.crumb .link:hover{color:var(--accent)}
+.crumb .sep{margin:0 6px}
+.title-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px}
+.page-title{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0;line-height:1.25}
+.page-desc{color:var(--dim);font-size:13px;margin:6px 0 8px;max-width:none}
+.sec{margin:14px 0;scroll-margin-top:8px}
+.sec-title{font-size:13.5px;font-weight:600;margin:0 0 6px;padding-top:2px}
+.sec p{margin:0 0 7px;color:var(--dim);font-size:13px}
+.sec p b,.sec li b{color:var(--ink);font-weight:600}
+.muted{color:var(--dim)}
+.link{color:var(--accent);cursor:pointer}
+.link:hover{text-decoration:underline}
+ul.bul{margin:6px 0 8px;padding-left:18px;color:var(--dim);font-size:13px}
+ul.bul li{margin:3px 0}
+.in-list{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:6px}
+.in-list .row{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:13px;color:var(--dim);cursor:pointer;border-top:1px solid var(--line-soft)}
+.in-list .row:first-child{border-top:0}
+.in-list .row:hover{background:var(--surface);color:var(--ink)}
+.in-list .row-chev{width:12px;height:12px;margin-left:auto;color:var(--faint);flex-shrink:0}
+.in-list .row:hover .row-chev{color:var(--dim)}
+.divider{border-top:1px solid var(--line);margin:14px 0}
+
+/* ---- minimal metaboxes: single inline strip ---- */
+.meta-min{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:8px 0 4px;padding:6px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+.meta-min .mi{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--dim);white-space:nowrap}
+.meta-min .mi svg{width:12px;height:12px;color:var(--faint);flex-shrink:0}
+.meta-min .mi code{font-family:var(--mono);font-size:11.5px;color:var(--ink)}
+.meta-min .ok-t{color:var(--ok);font-weight:600}
+.meta-min .beta-t{color:var(--beta-ink);font-weight:600}
+.meta-min .dep-t{color:var(--dep-ink);font-weight:600}
+
+/* ---- home ---- */
+.hero{max-width:none;margin-bottom:16px}
+.hero h1{font-size:24px;font-weight:600;letter-spacing:-.01em;margin:0 0 6px}
+.hero p{color:var(--dim);font-size:13.5px;margin:0;max-width:none}
+.search-big{margin-top:10px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:7px 10px;max-width:440px;color:var(--faint);font-size:13px;background:var(--surface);cursor:pointer}
+.search-big:hover{border-color:var(--accent)}
+.search-big kbd{margin-left:auto;background:#fff}
+.home-sec{margin-bottom:16px}
+.home-sec h2{font-size:14px;font-weight:600;margin:0 0 8px}
+.home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(max-width:900px){.home-grid{grid-template-columns:repeat(2,1fr)}}
+.home-card{border:1px solid var(--line);border-radius:8px;padding:10px;cursor:pointer;background:#fff}
+.home-card:hover{border-color:var(--accent)}
+.home-card svg{width:18px;height:18px;color:var(--accent);margin-bottom:6px}
+.home-card .t{font-size:13px;font-weight:600;margin-bottom:2px}
+.home-card .d{font-size:11.5px;color:var(--dim);line-height:1.45}
+
+/* ---- phases / releases ---- */
+.phase-card{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.phase-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:2px}
+.phase-head h3{font-size:13.5px;font-weight:600;margin:0}
+.phase-date{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap}
+.phase-card > p{color:var(--dim);font-size:12.5px;margin:0 0 6px}
+.phase-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line-soft)}
+.phase-list li{display:flex;gap:8px;padding:6px 0;font-size:13px;color:var(--dim);border-bottom:1px solid var(--line-soft)}
+.phase-list li:last-child{border-bottom:0}
+.pill{font-family:var(--mono);font-size:10.5px;color:var(--accent-ink);background:var(--accent-soft);border-radius:4px;padding:1px 6px;height:fit-content;flex-shrink:0;white-space:nowrap}
+.pill.gray{color:var(--dim);background:var(--raised)}
+.pill.amber{color:var(--beta-ink);background:var(--beta-bg)}
+.callout{border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:8px;padding:9px 12px;background:var(--surface);font-size:13px;color:var(--dim)}
+.release{border-left:2px solid var(--line);padding-left:14px;margin-bottom:16px;position:relative}
+.release-dot{position:absolute;left:-5px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.release-ver{font-family:var(--mono);font-weight:600;font-size:13px}
+.release-date{font-size:11.5px;color:var(--faint);margin-left:8px}
+.release-hl{color:var(--dim);font-size:12.5px;margin:4px 0 6px}
+.release ul{list-style:none;margin:0;padding:0}
+.release li{font-size:13px;color:var(--dim);padding:3px 0;display:flex;gap:8px}
+.tag{font-family:var(--mono);font-size:10px;color:var(--faint);border:1px solid var(--line);border-radius:4px;padding:0 5px;height:fit-content;margin-top:2px;flex-shrink:0;white-space:nowrap}
+
+/* ---- pager / feedback / buttons ---- */
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:10px}
+.pager-link{display:flex;align-items:flex-end;gap:5px;cursor:pointer;min-width:0}
+.pager-link.right{margin-left:auto;text-align:right}
+.pager-link svg{width:12px;height:12px;padding-bottom:2px;color:var(--faint);flex-shrink:0}
+.pager-link:hover svg{color:var(--accent)}
+.pager-k{font-size:10.5px;color:var(--faint);line-height:1.3}
+.pager-t{font-size:12.5px;font-weight:500;color:var(--dim);line-height:1.35}
+.pager-link:hover .pager-t{color:var(--accent-ink)}
+.icon-btn{display:flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;color:var(--dim);font-size:12px;padding:4px 9px;border-radius:6px;cursor:pointer;font-family:var(--sans)}
+.icon-btn:hover{border-color:#C7CCD6;color:var(--ink)}
+.icon-btn svg{width:9px;height:9px}
+.fb-wrap{position:relative}
+.fb-menu{position:absolute;top:calc(100% + 5px);right:0;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.12);min-width:172px;padding:3px;z-index:40}
+.fb-item{padding:6px 10px;border-radius:6px;font-size:13px;cursor:pointer}
+.fb-item:hover{background:var(--surface)}
+.panel{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px 12px;margin:8px 0}
+.panel-head{font-size:12px;color:var(--dim);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.panel-x{color:var(--faint);cursor:pointer;font-size:16px;line-height:1}
+.panel-x:hover{color:var(--dim)}
+textarea.input{width:100%;min-height:58px;border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-family:var(--sans);font-size:13px;color:var(--ink);resize:vertical;background:#fff}
+textarea.input:focus{outline:none;border-color:var(--accent)}
+.btn{border:1px solid var(--line);background:#fff;color:var(--dim);font-size:12.5px;padding:5px 13px;border-radius:6px;cursor:pointer;font-family:var(--sans)}
+.btn:hover{border-color:var(--accent);color:var(--accent-ink)}
+.btn-primary{margin-top:8px;background:var(--accent);color:#fff;border:1px solid var(--accent);border-radius:6px;padding:5px 14px;font-size:12.5px;cursor:pointer;font-family:var(--sans)}
+.btn-primary:hover{background:var(--accent-ink)}
+.helpful-row{display:flex;align-items:center;gap:8px;margin:14px 0;font-size:13px;color:var(--dim)}
+.ok-msg{margin:14px 0;font-size:13px;color:var(--ok);display:flex;align-items:center;gap:6px}
+
+/* ---- feedback overlay ---- */
+.fb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:flex-start;justify-content:center;padding:6vh 12px 24px;z-index:110;overflow-y:auto}
+.fb-dialog{background:#fff;border-radius:12px;width:560px;max-width:94vw;box-shadow:0 24px 64px rgba(0,0,0,.25);border:1px solid var(--line);overflow:hidden;flex-shrink:0}
+.fb-dhead{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.fb-dhead .panel-x{margin-left:auto;flex-shrink:0}
+.fb-dtitle{font-size:14px;font-weight:600}
+.fb-dsub{font-size:12px;color:var(--dim);margin-top:2px}
+.fb-dsub a{color:var(--accent);text-decoration:none;cursor:pointer}
+.fb-dbody{padding:12px 14px;max-height:62vh;overflow-y:auto}
+.fb-field{margin-bottom:10px}
+.fb-label{font-size:12px;font-weight:600;margin-bottom:4px;display:block}
+.fb-req{color:#B42318;font-weight:600}
+.fb-hint{font-size:11.5px;color:var(--faint);margin-top:4px}
+.fb-dialog input[type="text"],.fb-dialog input[type="email"]{width:100%;border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-family:var(--sans);font-size:13px;color:var(--ink);background:#fff}
+.fb-dialog input:focus{outline:none;border-color:var(--accent)}
+.fb-rate{display:flex;gap:6px;flex-wrap:wrap}
+.rate-pill{border:1px solid var(--line);background:#fff;border-radius:20px;padding:3px 10px;font-size:12px;color:var(--dim);cursor:pointer;font-family:var(--sans)}
+.rate-pill.sel{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);font-weight:500}
+.fb-radio-row{display:flex;gap:8px}
+.fb-file-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--dim)}
+.fb-preview{border:1px solid var(--line-soft);background:var(--surface);border-radius:6px;padding:7px 9px;font-size:13px;color:var(--dim);white-space:pre-wrap;min-height:58px}
+.fb-linkbtn{background:none;border:0;color:var(--accent);font-size:12px;cursor:pointer;padding:0;font-family:var(--sans)}
+.fb-linkbtn:hover{text-decoration:underline}
+.fb-err{font-size:12px;color:#B42318;margin-bottom:8px}
+.fb-actions{display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;border-top:1px solid var(--line);background:var(--surface)}
+
+/* ---- footer (bottom of main scroll column, sticks to bottom on short pages) ---- */
+.footer{flex-shrink:0;margin-top:auto;border-top:1px solid var(--line);padding:12px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:12px;color:var(--dim);background:#fff}
+.footer a{color:var(--dim);text-decoration:none;cursor:pointer}
+.footer a:hover{color:var(--accent-ink);text-decoration:underline}
+.footer .sep{color:var(--line)}
+.footer .copy{margin-left:auto;color:var(--faint);white-space:nowrap}
+
+/* ---- cmdk ---- */
+.cmdk-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:flex-start;justify-content:center;padding-top:10vh;z-index:100}
+.cmdk{background:#fff;border-radius:12px;width:540px;max-width:90vw;box-shadow:0 24px 64px rgba(0,0,0,.25);border:1px solid var(--line);overflow:hidden}
+.cmdk-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.cmdk-head svg{width:15px;height:15px;color:var(--faint);flex-shrink:0}
+.cmdk-input{flex:1;border:0;outline:0;font-size:14px;font-family:var(--sans)}
+.cmdk-results{max-height:340px;overflow-y:auto;padding:5px}
+.cmdk-row{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:6px;cursor:pointer;font-size:13px;color:var(--ink)}
+.cmdk-row:hover{background:var(--surface)}
+.cmdk-row.sel{background:var(--accent-soft);color:var(--accent-ink)}
+.cmdk-row .parents{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px;flex-shrink:0}
+.cmdk-empty{padding:22px;text-align:center;color:var(--faint);font-size:13px}
+.cmdk-foot{display:flex;align-items:center;gap:14px;padding:7px 12px;border-top:1px solid var(--line);background:var(--surface);font-size:11px;color:var(--faint)}
+.cmdk-foot .hint{display:flex;align-items:center;gap:4px}
+.cmdk-foot kbd{background:#fff}
+
+/* ---- chat (docked as right column inside .layout) ---- */
+.chat-btn{height:28px;width:28px;padding:0;justify-content:center;color:var(--faint)}
+.chat-btn svg{width:13px;height:13px}
+.layout.chat-open{grid-template-columns:196px minmax(0,1fr) 188px 340px}
+@media(max-width:1080px){.layout.chat-open{grid-template-columns:196px minmax(0,1fr) 320px}}
+.chat-side{border-left:1px solid var(--line);background:#fff;display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+.chat-head{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.chat-head .panel-x{margin-left:auto;flex-shrink:0}
+.chat-title{font-size:13px;font-weight:600}
+.chat-sub{font-size:11.5px;color:var(--dim);margin-top:2px}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+.chat-msg{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--dim);max-width:85%;line-height:1.5}
+.chat-msg.me{align-self:flex-end;border-color:var(--accent);color:var(--ink)}
+.chat-input{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:#fff}
+.chat-input input{flex:1;border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-family:var(--sans);font-size:13px;color:var(--ink);background:#fff;min-width:0}
+.chat-input input:focus{outline:none;border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand" onclick="location.href='index.html'" title="Back to Anchor home">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6V12C4 17 7.5 21 12 22C16.5 21 20 17 20 12V6L12 2Z" stroke="#045E96" stroke-width="1.6"/><circle cx="12" cy="11" r="2.4" stroke="#045E96" stroke-width="1.6"/><path d="M12 13.4V16.5" stroke="#045E96" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <b>Anchor</b>
+    <span class="brand-sub">Internal Identity Platform</span>
+  </div>
+
+  <div class="ver-wrap version-pill-wrap">
+    <button class="ver-pill" id="versionPillLabel" onclick="toggleVersionMenu(event)">
+      <span id="verLabel">v2026.09</span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="ver-menu hidden" id="versionMenu">
+      <div class="ver-item" onclick="selectVersion('v2026.09')"><span>v2026.09</span><span class="ver-tag">Current</span></div>
+      <div class="ver-item" onclick="selectVersion('v2026.08')"><span>v2026.08</span></div>
+      <div class="ver-item" onclick="selectVersion('v2026.07')"><span>v2026.07</span><span class="ver-tag">v1 GA</span></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="search-pill" onclick="openCmdk()">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>Search…</span>
+    <kbd>Ctrl + K</kbd>
+  </div>
+
+  <button class="icon-btn chat-btn" onclick="toggleChat()" aria-label="Ask Anchor AI" title="Ask Anchor AI">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  </button>
+
+  <nav class="topnav" id="topnav">
+    <button data-tab="api">API Reference</button>
+    <button data-tab="sdk">SDKs</button>
+    <button data-tab="roadmap">Roadmap</button>
+    <button data-tab="release">Release Notes</button>
+    <button data-tab="status">Status</button>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar thin-scroll" id="sidebar"></aside>
+  <main class="main-scroll thin-scroll" id="mainScroll">
+    <div class="content" id="content"></div>
+    <footer class="footer">
+      <a>Privacy Policy</a>
+      <span class="sep">|</span>
+      <a>Terms of Use</a>
+      <span class="sep">|</span>
+      <a>Security</a>
+      <span class="copy">&copy; 2026 Fortunesoft IT Innovations</span>
+    </footer>
+  </main>
+  <aside class="outline thin-scroll" id="outlineWrap">
+    <h4>On this page</h4>
+    <div id="outlineLinks"></div>
+  </aside>
+  <aside class="chat-side hidden" id="chatSide">
+    <div class="chat-head">
+      <svg viewBox="0 0 24 24" fill="none" style="width:15px;height:15px;color:var(--accent);flex-shrink:0;margin-top:1px"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <div>
+        <div class="chat-title">Anchor AI assistant</div>
+        <div class="chat-sub">Ask about auth, SSO, tokens…</div>
+      </div>
+      <span class="panel-x" onclick="closeChat()">×</span>
+    </div>
+    <div class="chat-msgs thin-scroll" id="chatMsgs">
+      <div class="chat-msg">Hi — I'm the Anchor AI assistant. Ask a docs question to get started.</div>
+    </div>
+    <div class="chat-input">
+      <input id="chatInput" type="text" placeholder="Ask Anchor AI…" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn-primary" style="margin-top:0" onclick="sendChat()">Send</button>
+    </div>
+  </aside>
+</div>
+
+<div class="cmdk-overlay hidden" id="cmdkOverlay" onclick="if(event.target===this)closeCmdk()">
+  <div class="cmdk">
+    <div class="cmdk-head">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="cmdkInput" class="cmdk-input" placeholder="Search pages, connectors, endpoints…" oninput="cmdkFilter(this.value)">
+      <kbd>Esc</kbd>
+    </div>
+    <div class="cmdk-results thin-scroll" id="cmdkResults"></div>
+    <div class="cmdk-foot">
+      <span class="hint"><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+      <span class="hint"><kbd>↵</kbd> Select</span>
+      <span class="hint"><kbd>Esc</kbd> Close</span>
+    </div>
+  </div>
+</div>
+
+<div class="fb-overlay hidden" id="fbOverlay" onclick="if(event.target===this)closeFbOverlay()">
+  <div class="fb-dialog" id="fbDialog"></div>
+</div>
+
+<script>
+const S_BETA = 'beta';
+const S_DEP = 'deprecated';
+
+// ---- NAV TREE (launch scope only — future items live in Roadmap) ----
+const tree = [
+  { id:'charter', title:'Platform Charter',
+    desc:'The reason Anchor exists and the boundary between what it owns and what applications own.',
+    children:[
+      { id:'charter-why', title:'Why This Exists', desc:'Duplicate auth code across projects — every app rebuilding login, sessions, and password storage on its own — was the core problem. Anchor centralizes that so teams stop re-solving it.' },
+      { id:'charter-scope', title:'Scope & Boundaries', desc:'Anchor owns who a user is and when they may act. It never owns what a user can do with a specific app’s resources — that stays in the application layer.' },
+      { id:'charter-diy', title:'Before You Build It Yourself', desc:'A short decision tree for the rare case a team believes it needs custom identity logic, and who on the platform team signs off on the exception.' },
+      { id:'charter-ownership', title:'Ownership & Ways of Working', desc:'Platform team contacts, on-call rotation, the RFC process for requesting new connectors or features, and per-pillar SLA commitments.' },
+    ]},
+  { id:'start', title:'Get Started',
+    desc:'Everything a new team needs before writing their first integration.',
+    children:[
+      { id:'start-what', title:'What is Anchor?', desc:'A one-page primer on the platform, who it serves today, and where to ask for help.' },
+      { id:'start-quickstart', title:'Quickstart: Add Login in 15 Minutes', desc:'Register a client, drop in the SDK, and redirect to hosted login — a working auth flow before your coffee gets cold.' },
+      { id:'start-concepts', title:'Core Concepts', desc:'Tenants, organizations, clients, and tokens — the nouns every other page in these docs assumes you already know.' },
+      { id:'start-arch', title:'Architecture Overview', desc:'How the token service, user directory, and admin console fit together, and which parts are stateless vs. stateful.' },
+      { id:'start-envs', title:'Environments & Access', desc:'Sandbox, staging, and production tenants, and how to request credentials for each.' },
+    ]},
+  { id:'auth', title:'Authentication',
+    desc:'Login, session handling, and the protections around both.',
+    children:[
+      { id:'auth-login', title:'Login & Signup', children:[
+        { id:'auth-login-hosted', title:'Hosted Login Page', desc:'A centrally maintained login screen your app redirects to — no auth UI to build or patch yourself.' },
+        { id:'auth-login-embedded', title:'Embedded Login (SDK)', status:S_BETA, desc:'Render the login form inside your own UI when a full redirect would break the product experience.' },
+        { id:'auth-login-passwordless', title:'Passwordless / Passkeys', status:S_BETA, desc:'Magic links and passkey-based sign-in for apps that want to drop passwords entirely.' },
+      ]},
+      { id:'auth-sso', title:'Single Sign-On', children:[
+        { id:'auth-sso-saml', title:'SAML', desc:'SAML 2.0 assertions for enterprise apps that don’t speak OIDC.' },
+        { id:'auth-sso-oidc', title:'OIDC', desc:'The default protocol for new integrations — authorization code flow with PKCE.' },
+        { id:'auth-sso-cross', title:'Cross-App SSO', desc:'One login session shared across every internal app registered with Anchor.' },
+      ]},
+      { id:'auth-mfa', title:'Multi-Factor Authentication', children:[
+        { id:'auth-mfa-totp', title:'TOTP', desc:'Authenticator-app codes — the default second factor for internal tools.' },
+        { id:'auth-mfa-webauthn', title:'WebAuthn / Passkeys', status:S_BETA, desc:'Hardware keys and platform authenticators for phishing-resistant MFA.' },
+        { id:'auth-mfa-sms', title:'SMS Fallback', status:S_DEP, desc:'Deprecated — use WebAuthn / passkeys instead. A fallback factor for users without an authenticator app — enabled per-org, not by default.' },
+        { id:'auth-mfa-policy', title:'Enforcing MFA Policies', desc:'How an org admin makes MFA mandatory, or steps it up for sensitive actions only.' },
+      ]},
+      { id:'auth-session', title:'Session & Token Management', children:[
+        { id:'auth-session-tokens', title:'Access, ID & Refresh Tokens', desc:'What each token contains, how long it lives, and which one you should actually be checking.' },
+        { id:'auth-session-rotation', title:'Token Rotation & Revocation', desc:'Automatic refresh-token rotation and how to force a token dead on logout or compromise.' },
+        { id:'auth-session-device', title:'Device & Session Management', status:S_BETA, desc:'Let a user see and revoke every device currently signed in to their account.' },
+      ]},
+      { id:'auth-security', title:'Security Protections', children:[
+        { id:'auth-security-bruteforce', title:'Brute-Force Protection & Rate Limiting', desc:'Login attempt throttling and lockouts, applied at the platform level so no app has to build its own.' },
+      ]},
+    ]},
+  { id:'users', title:'User Management',
+    desc:'Where accounts, organizations, and provisioning live.',
+    children:[
+      { id:'users-crud', title:'Users', children:[
+        { id:'users-crud-api', title:'CRUD via API/Console', desc:'Create, read, update, and disable user records through the API or the admin console.' },
+        { id:'users-crud-selfservice', title:'Self-Service Profile & Password Reset', desc:'Users manage their own profile fields and reset their own password without a ticket.' },
+        { id:'users-crud-delete', title:'Soft-Delete & Anonymization', status:S_BETA, desc:'Deactivated accounts are soft-deleted first and anonymized on a schedule, so nothing is destroyed by accident.' },
+      ]},
+      { id:'users-org', title:'Organizations & Tenancy', children:[
+        { id:'users-org-multi', title:'Multi-Tenancy Model', desc:'How tenants are isolated from one another at the data layer, not just the UI layer.' },
+        { id:'users-org-hierarchy', title:'Org/Team Hierarchy', desc:'Nesting teams under organizations for permission inheritance and reporting.' },
+        { id:'users-org-delegated', title:'Delegated Admin', status:S_BETA, desc:'Let an org manage its own users and roles without platform-team involvement.' },
+      ]},
+      { id:'users-provisioning', title:'Provisioning', children:[
+        { id:'users-prov-scim', title:'SCIM Provisioning/De-provisioning', status:S_BETA, desc:'Automatic user creation and offboarding synced from an upstream HR or directory system.' },
+      ]},
+    ]},
+  { id:'rbac', title:'Roles & Access Control',
+    desc:'Who can do what, and the paper trail behind every decision.',
+    children:[
+      { id:'rbac-roles', title:'Roles & Permissions', desc:'Roles are named collections of permissions, attached to users or groups and carried in the token.' },
+      { id:'rbac-policy', title:'Policy Engine', status:S_BETA, desc:'Conditional access rules beyond flat roles — the on-ramp toward attribute-based access control.' },
+      { id:'rbac-audit', title:'Audit & Review', children:[
+        { id:'rbac-audit-log', title:'Immutable Audit Logging', desc:'Every login, role change, and admin action, written to a log that cannot be edited after the fact.' },
+        { id:'rbac-audit-review', title:'Access Review & Recertification', status:S_BETA, desc:'Periodic prompts for admins to confirm a user still needs the access they hold.' },
+      ]},
+    ]},
+  { id:'compliance', title:'Compliance & Security',
+    desc:'Certifications, data handling, and the controls that back them.',
+    children:[
+      { id:'comp-certs', title:'Certifications', status:S_BETA, desc:'Current status of SOC 2 Type II and ISO 27001 — what’s attested today and what’s in progress.' },
+      { id:'comp-privacy', title:'Data Privacy', desc:'GDPR and DPDP handling: consent, data subject requests, and cross-border transfer rules.' },
+      { id:'comp-encryption', title:'Encryption', children:[
+        { id:'comp-enc-rest', title:'At Rest', desc:'All user and credential data encrypted at rest using platform-managed keys.' },
+        { id:'comp-enc-transit', title:'In Transit', desc:'TLS enforced on every endpoint, internal and external, with no plaintext fallback.' },
+        { id:'comp-enc-keys', title:'Key Management & Rotation', status:S_BETA, desc:'Where keys live, who can access them, and the rotation schedule for each key class.' },
+      ]},
+      { id:'comp-governance', title:'Data Governance', children:[
+        { id:'comp-gov-retention', title:'Retention Policies', status:S_BETA, desc:'How long each data category is kept before automatic deletion, by data type and org.' },
+        { id:'comp-gov-pii', title:'PII Classification & Log Masking', status:S_BETA, desc:'How personal fields are tagged and automatically redacted before they reach application logs.' },
+      ]},
+      { id:'comp-incident', title:'Incident Response', children:[
+        { id:'comp-inc-breach', title:'Breach Notification Process', desc:'Who gets notified, on what timeline, and what an affected app team should expect from us.' },
+        { id:'comp-inc-pentest', title:'Pen-Testing & Vuln Scanning', status:S_BETA, desc:'Cadence of third-party penetration tests and continuous automated scanning.' },
+      ]},
+    ]},
+  { id:'integrations', title:'Integrations',
+    desc:'How Anchor connects to identity sources and providers outside itself.',
+    children:[
+      { id:'int-connector', title:'Connector Framework', children:[
+        { id:'int-conn-overview', title:'Adapter Interface Overview', desc:'The single interface every connector implements, so new providers plug in without touching core code.' },
+        { id:'int-conn-build', title:'Building a Custom Connector', desc:'A walkthrough for wiring up a provider that isn’t on the supported list yet.' },
+      ]},
+      { id:'int-federation', title:'Enterprise IdP Federation', children:[
+        { id:'int-fed-saml', title:'SAML Brokering', desc:'Broker a partner’s SAML IdP through Anchor instead of integrating with every app directly.' },
+        { id:'int-fed-oidc', title:'OIDC Brokering', desc:'Same brokering pattern for partners that speak OIDC instead of SAML.' },
+      ]},
+      { id:'int-kyc', title:'KYC/AML Providers', children:[
+        { id:'int-kyc-persona', title:'Persona', status:S_BETA, desc:'Identity verification hook for flows that require document or liveness checks.' },
+        { id:'int-kyc-onfido', title:'Onfido', status:S_BETA, desc:'An alternate KYC provider available behind the same adapter interface as Persona.' },
+      ]},
+      { id:'int-social', title:'Social Login Providers', desc:'Google, GitHub, and Microsoft sign-in for apps that want a low-friction consumer entry point.' },
+    ]},
+  { id:'reliability', title:'Reliability & Operations',
+    desc:'What keeps Anchor up, and what happens when it isn’t.',
+    children:[
+      { id:'rel-sla', title:'Availability & SLAs', desc:'Current uptime target, historical actuals, and what counts as a qualifying incident.' },
+      { id:'rel-rate', title:'Rate Limiting & Abuse Protection', desc:'Per-client and per-tenant limits, and how to request a higher ceiling.' },
+      { id:'rel-scale', title:'Scalability', children:[
+        { id:'rel-scale-horizontal', title:'Horizontal Scaling', desc:'How the token and auth services scale out under load without shared state.' },
+        { id:'rel-scale-region', title:'Multi-Region Failover', status:S_BETA, desc:'Active-passive failover across regions, with current recovery time objectives.' },
+      ]},
+      { id:'rel-observability', title:'Observability', children:[
+        { id:'rel-obs-metrics', title:'Metrics', desc:'Golden-signal dashboards for auth latency, error rate, and token issuance volume.' },
+        { id:'rel-obs-tracing', title:'Tracing', desc:'Distributed traces across the login and token-exchange path for debugging slow requests.' },
+        { id:'rel-obs-alerting', title:'Alerting', desc:'On-call paging thresholds and how app teams can subscribe to relevant alerts.' },
+      ]},
+      { id:'rel-versioning', title:'API Versioning', desc:'How breaking and non-breaking API changes are versioned and communicated.' },
+      { id:'rel-dr', title:'Disaster Recovery & Backup-Restore', desc:'Backup frequency, retention, and the last tested restore time for the user directory.' },
+    ]},
+  { id:'sdks', title:'Clients & SDKs',
+    desc:'Officially maintained libraries for every stack we support internally.',
+    children:[
+      { id:'sdk-web', title:'Web (JS/React)', desc:'Drop-in hooks and components for React apps, plus a framework-agnostic JS client.' },
+      { id:'sdk-mobile', title:'Mobile (iOS/Android)', status:S_BETA, desc:'Native SDKs handling the OAuth redirect dance and secure token storage on-device.' },
+      { id:'sdk-backend', title:'Backend (Node, Java, Python, .NET)', desc:'Server-side libraries for validating tokens and calling the management API.' },
+      { id:'sdk-cli', title:'CLI', status:S_BETA, desc:'Register clients, rotate secrets, and inspect tokens from the terminal.' },
+    ]},
+  { id:'devtools', title:'Developer Tools',
+    desc:'The tools you’ll actually have open while integrating.',
+    children:[
+      { id:'dev-apiref', title:'API Reference', desc:'Full endpoint reference, generated from the same spec that powers our SDKs.' },
+      { id:'dev-sandbox', title:'Sandbox / Test Environment', desc:'A disposable tenant for testing integrations without touching production data.' },
+      { id:'dev-debug', title:'Debugging & Logs', desc:'Where to find request-level logs for a failed login or token exchange.' },
+      { id:'dev-webhooks', title:'Webhooks', status:S_BETA, desc:'Subscribe to user and org lifecycle events instead of polling the API.' },
+    ]},
+  { id:'release-mgmt', title:'Release Management',
+    desc:'How Anchor ships changes without breaking every app at once.',
+    children:[
+      { id:'rel-mgmt-versioning', title:'Versioning Strategy', desc:'Semantic versioning rules and what counts as a breaking change.' },
+      { id:'rel-mgmt-cadence', title:'Release Cadence & Changelog', desc:'Ship schedule and the running changelog every app team should watch.' },
+      { id:'rel-mgmt-deprecation', title:'Deprecation Policy & Sunset Timelines', desc:'Minimum notice period before a feature or endpoint is retired.' },
+      { id:'rel-mgmt-compat', title:'Backward Compatibility Guarantees', desc:'What we promise won’t change under a given major version.' },
+    ]},
+  { id:'adr', title:'Architecture Decision Records',
+    desc:'The paper trail behind every major design choice.',
+    children:[
+      { id:'adr-log', title:'ADR Log', desc:'Chronological record of decisions — build vs. buy, monolith vs. services, chosen crypto libraries.' },
+      { id:'adr-propose', title:'Propose a New ADR', desc:'Template and review process for proposing a change to core platform architecture.' },
+    ]},
+  { id:'migration', title:'Migrating from Other IDPs',
+    desc:'Moving an existing app’s users and logins onto Anchor.',
+    children:[
+      { id:'mig-okta', title:'From Okta / Auth0', status:S_BETA, desc:'Mapping Okta/Auth0 tenants, rules, and users onto Anchor’s equivalent concepts.' },
+      { id:'mig-azure', title:'From Azure Entra ID', status:S_BETA, desc:'Handling hybrid AD-synced identities during a migration to Anchor.' },
+      { id:'mig-keycloak', title:'From Keycloak', status:S_BETA, desc:'Migrating a self-hosted Keycloak realm, including custom providers, to Anchor.' },
+    ]},
+  { id:'runbooks', title:'Runbooks',
+    desc:'What to do when something breaks, written for the person paged at 3am.',
+    children:[
+      { id:'run-incident', title:'Incident Response Playbooks', desc:'Step-by-step response for the most common Anchor incident classes.' },
+      { id:'run-oncall', title:'On-Call Escalation Paths', desc:'Who’s paged first, second, and third, and how to escalate outside business hours.' },
+      { id:'run-failure', title:'Common Failure Modes & Recovery', desc:'Known failure patterns, their symptoms, and the fastest path back to green.' },
+    ]},
+];
+
+// ---- flatten (pre-order) for lookup + prev/next pagination ----
+const byId = {};
+const flatOrder = [];
+(function flatten(nodes, parents){
+  nodes.forEach(n=>{
+    byId[n.id] = {...n, parents};
+    flatOrder.push(n.id);
+    if(n.children) flatten(n.children, [...parents, n.title]);
+  });
+})(tree, []);
+
+const sidebarEl = document.getElementById('sidebar');
+const contentEl = document.getElementById('content');
+const mainScroll = document.getElementById('mainScroll');
+const outlineWrap = document.getElementById('outlineWrap');
+const outlineLinks = document.getElementById('outlineLinks');
+let feedbackState = {};
+
+function betaChip(status, big){
+  if(status !== S_BETA) return '';
+  return big
+    ? '<span class="beta">Beta</span>'
+    : '<span class="beta-sm">Beta</span>';
+}
+function depChip(status, big){
+  if(status !== S_DEP) return '';
+  return big
+    ? '<span class="dep">Deprecated</span>'
+    : '<span class="dep-sm">Deprecated</span>';
+}
+function statusChip(status, big){ return betaChip(status, big) + depChip(status, big); }
+const ROW_CHEV = '<svg class="row-chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ROW_CHEV_L = '<svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function betaSuffix(status){ return status === S_BETA ? '<span class="beta-inline"> (Beta)</span>' : ''; }
+function depSuffix(status){ return status === S_DEP ? '<span class="dep-inline"> (Deprecated)</span>' : ''; }
+function statusSuffix(status){ return betaSuffix(status) + depSuffix(status); }
+
+function renderNode(node, depth){
+  if(node.children){
+    const isTop = depth === 0;
+    return `<details class="nav-group" ${isTop?'open':''}>
+      <summary class="nav-sum ${isTop?'top':'sub'}" onclick="event.stopPropagation();toggleGroup(event,'${node.id}')">
+        <svg class="caret" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <span class="trunc">${node.title}</span>
+      </summary>
+      <div class="nav-children">${node.children.map(c=>renderNode(c, depth+1)).join('')}</div>
+    </details>`;
+  }
+  const suffix = statusSuffix(node.status);
+  return `<div class="nav-leaf" data-id="${node.id}" onclick="selectPage('${node.id}')">
+    <span class="trunc">${node.title}${suffix}</span>
+  </div>`;
+}
+
+function toggleGroup(e,id){ selectPage(id); }
+
+sidebarEl.innerHTML = `
+  <div class="side-home" onclick="goHome()">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M3 11l9-8 9 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v10h14V10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Home</span>
+  </div>
+  ${tree.map(n=>renderNode(n,0)).join('')}
+`;
+
+// ---------- OUTLINE + SCROLL SPY ----------
+function buildOutline(sections){
+  if(!sections || !sections.length){ outlineWrap.classList.add('empty'); outlineLinks.innerHTML=''; return; }
+  outlineWrap.classList.remove('empty');
+  outlineLinks.innerHTML = sections.map(s=>`<a data-target="${s.id}">${s.label}</a>`).join('');
+  outlineLinks.querySelectorAll('a').forEach(a=>{
+    a.onclick = (e)=>{
+      e.preventDefault();
+      const el = document.getElementById(a.dataset.target);
+      if(el) mainScroll.scrollTo({top: el.offsetTop - 10, behavior:'smooth'});
+    };
+  });
+  requestAnimationFrame(updateSpy);
+}
+function updateSpy(){
+  const secs = [...contentEl.querySelectorAll('section[id]')];
+  if(!secs.length) return;
+  const top = mainScroll.scrollTop + 24;
+  let cur = secs[0].id;
+  for(const s of secs){ if(s.offsetTop <= top) cur = s.id; }
+  outlineLinks.querySelectorAll('a').forEach(a=>a.classList.toggle('active', a.dataset.target===cur));
+}
+mainScroll.addEventListener('scroll', ()=>requestAnimationFrame(updateSpy), {passive:true});
+function resetScroll(){ mainScroll.scrollTop = 0; }
+
+// ---------- FEEDBACK DROPDOWN ----------
+function feedbackDropdown(pageId){
+  const menuOpen = feedbackState[pageId+'-menu'];
+  return `
+    <div class="fb-wrap">
+      <button class="icon-btn" onclick="toggleFbMenu('${pageId}')">
+        Feedback
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="fb-menu ${menuOpen?'':'hidden'}" id="fbmenu-${pageId}">
+        <div class="fb-item" onclick="chooseFeedback('${pageId}','issue')">Report an issue</div>
+        <div class="fb-item" onclick="chooseFeedback('${pageId}','feature')">Suggest a feature</div>
+      </div>
+    </div>`;
+}
+function toggleFbMenu(pageId){ feedbackState[pageId+'-menu'] = !feedbackState[pageId+'-menu']; render(pageId); }
+let fbCurrent = null;
+function chooseFeedback(pageId, mode){ feedbackState[pageId+'-menu']=false; render(pageId); openFbOverlay(pageId, mode); }
+function openFbOverlay(pageId, mode){
+  const node = byId[pageId];
+  fbCurrent = { pageId, mode, rating:'none', sensitive:null, preview:false };
+  const isIssue = mode !== 'feature';
+  const ratings = ['none','not useful','needs work','good','great','awesome'];
+  document.getElementById('fbDialog').innerHTML = `
+    <div class="fb-dhead">
+      <div>
+        <div class="fb-dtitle">${isIssue ? 'Report an issue' : 'Suggest a feature'} — ${node ? node.title : ''}</div>
+        <div class="fb-dsub">Provide feedback about this article. If you need help with an app, visit <a>Anchor Support</a> or ask in the <a>Anchor Community</a>.</div>
+      </div>
+      <span class="panel-x" onclick="closeFbOverlay()">×</span>
+    </div>
+    <div class="fb-dbody">
+      <div class="fb-err hidden" id="fb-err"></div>
+      <div class="fb-field">
+        <span class="fb-label">Rating</span>
+        <div class="fb-rate" id="fb-rate">${ratings.map(r=>`<button class="rate-pill ${r==='none'?'sel':''}" data-r="${r}" onclick="fbSetRating('${r}')">${r.charAt(0).toUpperCase()+r.slice(1)}</button>`).join('')}</div>
+      </div>
+      <div class="fb-field">
+        <label class="fb-label" for="fb-summary">Summary <span class="fb-req">Required</span></label>
+        <input type="text" id="fb-summary" placeholder="${isIssue ? 'Brief summary of the problem' : 'Brief summary of your suggestion'}">
+      </div>
+      <div class="fb-field">
+        <span class="fb-label">Description</span>
+        <div style="margin-bottom:4px"><button class="fb-linkbtn" onclick="fbTogglePreview()">Preview description</button></div>
+        <textarea id="fb-desc" class="input" placeholder="${isIssue ? 'What went wrong, and what did you expect instead?' : 'What would you like this feature to do?'}"></textarea>
+        <div id="fb-preview" class="fb-preview hidden"></div>
+        <div class="fb-hint">Please include a full description of how to replicate the problem you are experiencing. This may be the steps to replicate, or the data that caused the problem.</div>
+      </div>
+      <div class="fb-field">
+        <span class="fb-label">Attach file</span>
+        <div class="fb-file-row"><label class="btn" for="fb-file" style="cursor:pointer">Choose file</label><span id="fb-filename">No file chosen</span><input type="file" id="fb-file" class="hidden" onchange="fbFileChange(this)"></div>
+      </div>
+      <div class="fb-field">
+        <span class="fb-label">Does this page contain sensitive information? <span class="fb-req">Required</span></span>
+        <div class="fb-radio-row" id="fb-sens"><button class="btn" data-v="yes" onclick="fbSetSensitive('yes')">Yes</button><button class="btn" data-v="no" onclick="fbSetSensitive('no')">No</button></div>
+      </div>
+      <div class="fb-field">
+        <label class="fb-label" for="fb-name">Name</label>
+        <input type="text" id="fb-name" autocomplete="name">
+      </div>
+      <div class="fb-field" style="margin-bottom:0">
+        <label class="fb-label" for="fb-email">Email</label>
+        <input type="email" id="fb-email" autocomplete="email">
+      </div>
+    </div>
+    <div class="fb-actions">
+      <button class="btn" onclick="closeFbOverlay()">Close</button>
+      <button class="btn-primary" style="margin-top:0" onclick="submitFbOverlay()">${isIssue ? 'Log issue' : 'Submit suggestion'}</button>
+    </div>`;
+  document.getElementById('fbOverlay').classList.remove('hidden');
+}
+function closeFbOverlay(){ document.getElementById('fbOverlay').classList.add('hidden'); fbCurrent = null; }
+function fbSetRating(r){
+  if(!fbCurrent) return;
+  fbCurrent.rating = r;
+  document.querySelectorAll('#fb-rate .rate-pill').forEach(b=>b.classList.toggle('sel', b.dataset.r===r));
+}
+function fbSetSensitive(v){
+  if(!fbCurrent) return;
+  fbCurrent.sensitive = v;
+  document.querySelectorAll('#fb-sens .btn').forEach(b=>{
+    const on = b.dataset.v===v;
+    b.style.borderColor = on ? 'var(--accent)' : '';
+    b.style.color = on ? 'var(--accent-ink)' : '';
+  });
+}
+function fbTogglePreview(){
+  if(!fbCurrent) return;
+  fbCurrent.preview = !fbCurrent.preview;
+  const ta = document.getElementById('fb-desc'), pv = document.getElementById('fb-preview');
+  pv.textContent = ta.value || 'Nothing to preview yet.';
+  ta.classList.toggle('hidden', fbCurrent.preview);
+  pv.classList.toggle('hidden', !fbCurrent.preview);
+}
+function fbFileChange(input){ document.getElementById('fb-filename').textContent = (input.files && input.files[0]) ? input.files[0].name : 'No file chosen'; }
+function submitFbOverlay(){
+  if(!fbCurrent) return;
+  const err = document.getElementById('fb-err');
+  const summary = document.getElementById('fb-summary').value.trim();
+  if(!summary){ err.textContent = 'Summary is required.'; err.classList.remove('hidden'); return; }
+  if(!fbCurrent.sensitive){ err.textContent = 'Please tell us whether this page contains sensitive information.'; err.classList.remove('hidden'); return; }
+  err.classList.add('hidden');
+  const done = fbCurrent;
+  feedbackState[done.pageId+'-submitted'] = true;
+  document.getElementById('fbDialog').innerHTML = `
+    <div class="fb-dhead"><div class="fb-dtitle">${done.mode!=='feature' ? 'Report an issue' : 'Suggest a feature'}</div></div>
+    <div class="fb-dbody"><div class="ok-msg" style="margin:0">✓ Thanks — logged for the platform team and tagged to &ldquo;${byId[done.pageId].title}&rdquo;.</div></div>
+    <div class="fb-actions"><button class="btn" onclick="closeFbOverlay()">Close</button></div>`;
+}
+
+// ---------- HELPFUL WIDGET ----------
+function markHelpful(pageId, val){ feedbackState[pageId+'-helpful']=val; render(pageId); }
+function submitHelpfulReason(pageId){ feedbackState[pageId+'-helpful-submitted']=true; render(pageId); }
+
+function helpfulWidget(pageId){
+  const answer = feedbackState[pageId+'-helpful'];
+  const submitted = feedbackState[pageId+'-helpful-submitted'];
+  if(answer === 'yes') return `<div class="ok-msg">✓ Thanks for the feedback.</div>`;
+  if(answer === 'no'){
+    if(submitted) return `<div class="ok-msg">✓ Thanks — we've logged this to improve the page.</div>`;
+    return `
+      <section class="sec" id="sec-feedback">
+        <div class="panel">
+          <div style="font-size:12.5px;color:var(--dim);margin-bottom:8px">Sorry to hear that — what was missing or unclear?</div>
+          <textarea id="hf-${pageId}" class="input" placeholder="Tell us what could be improved…"></textarea>
+          <button class="btn-primary" onclick="submitHelpfulReason('${pageId}')">Submit feedback</button>
+        </div>
+      </section>`;
+  }
+  return `<div class="helpful-row">
+    <span>Was this page helpful?</span>
+    <button class="btn" onclick="markHelpful('${pageId}','yes')">Yes</button>
+    <button class="btn" onclick="markHelpful('${pageId}','no')">No</button>
+  </div>`;
+}
+
+// ---------- MINIMAL METABOXES: small icon + text strip ----------
+function metaboxes(node){
+  const isBeta = node.status === S_BETA;
+  const isDep = node.status === S_DEP;
+  const cls = isDep ? 'dep-t' : (isBeta ? 'beta-t' : 'ok-t');
+  const label = isDep ? 'Deprecated' : (isBeta ? 'Beta' : 'Stable');
+  return `
+  <div class="meta-min">
+    <span class="mi">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 2h8l5 5v15H6V2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2v5h5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 13h7M9 17h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      ${node.parents[0] || node.title}
+    </span>
+    <span class="mi">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="${cls}">${label}</span>
+    </span>
+    <span class="mi">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <code>2026-08-14</code>
+    </span>
+  </div>`;
+}
+
+function pagerRow(pageId){
+  const i = flatOrder.indexOf(pageId);
+  const prevId = i>0 ? flatOrder[i-1] : null;
+  const nextId = i<flatOrder.length-1 ? flatOrder[i+1] : null;
+  return `<div class="pager">
+    ${prevId ? `<div class="pager-link" onclick="selectPage('${prevId}')">${ROW_CHEV_L}<div><div class="pager-k">Previous</div><div class="pager-t">${byId[prevId].title}</div></div></div>` : '<div></div>'}
+    ${nextId ? `<div class="pager-link right" onclick="selectPage('${nextId}')"><div><div class="pager-k">Next</div><div class="pager-t">${byId[nextId].title}</div></div>${ROW_CHEV}</div>` : '<div></div>'}
+  </div>`;
+}
+
+function selectPage(id){
+  document.querySelectorAll('.nav-leaf').forEach(el=>el.classList.remove('active'));
+  const el = document.querySelector(`.nav-leaf[data-id="${id}"]`);
+  if(el) el.classList.add('active');
+  setActiveTab('docs');
+  render(id);
+}
+
+function findFirstLeaf(node){ return node.children ? findFirstLeaf(node.children[0]) : node.id; }
+function getSiblings(node){
+  const key = node.parents.join('|');
+  return flatOrder.filter(id=>id!==node.id && byId[id].parents.join('|')===key);
+}
+
+function bodyForNode(node){
+  let h = (node.status === S_DEP ? `<div class="callout" style="border-left-color:var(--dep-ink)"><b>Deprecated.</b> <span class="muted">SMS Fallback is deprecated — migrate to <a class="link" onclick="selectPage('auth-mfa-webauthn')">WebAuthn / Passkeys</a>. It remains available per-org until the sunset date in the <a class="link" onclick="selectPage('rel-mgmt-deprecation')">deprecation policy</a>.</span></div>` : '')
+    + `<section class="sec" id="sec-overview"><h2 class="sec-title">Overview</h2><p>${node.desc || ('Reference for <b>'+node.title+'</b>.')}</p>`
+    + `<p class="muted">Part of <b>${node.parents[0] || node.title}</b>${node.parents[1] ? ' → <b>'+node.parents[1]+'</b>' : ''}. Start in sandbox, verify the happy path, then tighten policy in staging before production.</p></section>`;
+  if(node.children){
+    h += `<section class="sec" id="sec-in-this-section"><h2 class="sec-title">In this section</h2><div class="in-list">`
+      + node.children.map(c=>`<div class="row" onclick="selectPage('${findFirstLeaf(c)}')"><span>${c.title}${statusSuffix(c.status)}</span>${ROW_CHEV}</div>`).join('')
+      + `</div></section>`;
+  } else {
+    h += `<section class="sec" id="sec-key"><h2 class="sec-title">What to know</h2><ul class="bul">`
+      + `<li>Anchor owns this centrally — apps consume it via redirect, SDK, or API.</li>`
+      + `<li>Defaults are production-safe; overrides are per-org and audit-logged.</li>`
+      + `<li>Failures surface in <a class="link" onclick="selectPage('dev-debug')">Debugging &amp; Logs</a> with request IDs.</li>`
+      + `</ul></section>`
+      + `<section class="sec" id="sec-use"><h2 class="sec-title">Using ${node.title}</h2>`
+      + `<p class="muted">Verify in the <a class="link" onclick="selectPage('dev-sandbox')">sandbox tenant</a> first. For lifecycle events (create, disable, role change), prefer <a class="link" onclick="selectPage('dev-webhooks')">webhooks</a> over polling.</p></section>`;
+  }
+  const sibs = getSiblings(node);
+  if(sibs.length){
+    h += `<section class="sec" id="sec-related"><h2 class="sec-title">Related</h2><div class="in-list">`
+      + sibs.slice(0,5).map(id=>`<div class="row" onclick="selectPage('${id}')"><span>${byId[id].title}${statusSuffix(byId[id].status)}</span>${ROW_CHEV}</div>`).join('')
+      + `</div></section>`;
+  }
+  return h;
+}
+function outlineForNode(node){
+  const secs = [{id:'sec-overview', label:'Overview'}];
+  if(node.children) secs.push({id:'sec-in-this-section', label:'In this section'});
+  else { secs.push({id:'sec-key', label:'What to know'}); secs.push({id:'sec-use', label:'Using ' + node.title}); }
+  if(getSiblings(node).length) secs.push({id:'sec-related', label:'Related'});
+  return secs;
+}
+
+function render(id){
+  const node = byId[id];
+  if(!node){ contentEl.innerHTML = '<p class="muted">Page not found.</p>'; buildOutline([]); return; }
+  const crumb = [...node.parents, node.title].map((t,i,arr)=> i<arr.length-1 ? `${t}<span class="sep">/</span>` : t).join('');
+  contentEl.innerHTML = `
+    <div class="crumb"><span class="link" onclick="goHome()">Home</span><span class="sep">/</span>${crumb}</div>
+    <div class="title-row">
+      <h1 class="page-title">${node.title}</h1>
+      ${statusChip(node.status, true)}
+      <div style="margin-left:auto">${feedbackDropdown(id)}</div>
+    </div>
+    <p class="page-desc">${node.desc || ''}</p>
+    ${metaboxes(node)}
+    ${bodyForNode(node)}
+    <div class="divider"></div>
+    ${helpfulWidget(id)}
+    ${pagerRow(id)}
+  `;
+  resetScroll();
+  buildOutline(outlineForNode(node));
+}
+
+// ---------- HOMEPAGE ----------
+const homeCards = [
+  { id:'auth', label:'Authentication', desc:'Login, SSO, MFA, sessions, and token handling.', icon:'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v2' },
+  { id:'users', label:'User Management', desc:'Accounts, orgs, tenancy, and provisioning.', icon:'M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-4a4 4 0 100-8 4 4 0 000 8zm6 4a4 4 0 100-8 4 4 0 000 8z' },
+  { id:'rbac', label:'Roles & Access Control', desc:'Roles, permissions, policy engine, audit trail.', icon:'M12 15v2m-3 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm1-10V7a2 2 0 114 0v2' },
+  { id:'compliance', label:'Compliance & Security', desc:'Certifications, encryption, data governance.', icon:'M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z' },
+  { id:'integrations', label:'Integrations', desc:'Connector framework, federation, KYC, social login.', icon:'M13 10V3L4 14h7v7l9-11h-7z' },
+  { id:'sdks', label:'Clients & SDKs', desc:'Web, mobile, backend, and CLI libraries.', icon:'M8 9l-4 3 4 3m8-6l4 3-4 3M13 5l-2 14' },
+];
+const homeGuides = ['start-quickstart','auth-sso-oidc','users-org-multi','rbac-roles','comp-privacy','dev-apiref'];
+
+function goHome(){
+  document.querySelectorAll('.nav-leaf').forEach(el=>el.classList.remove('active'));
+  setActiveTab('docs');
+  contentEl.innerHTML = `
+    <div class="hero">
+      <h1>Anchor developer docs</h1>
+      <p>Everything a lead developer needs to plug into the internal identity platform — authentication, user management, access control, compliance, and the SDKs that wire it all up. Built once, so no one has to build it twice.</p>
+      <div class="search-big" onclick="openCmdk()">
+        <span>Search the docs, API reference, and connectors…</span>
+        <kbd>Ctrl + K</kbd>
+      </div>
+    </div>
+    <section class="sec" id="sec-explore">
+      <h2 class="sec-title" style="font-size:14px">Explore by pillar</h2>
+      <div class="home-grid">
+        ${homeCards.map(c=>`
+          <div class="home-card" onclick="selectPage('${findFirstLeaf(byId[c.id])}')">
+            <svg viewBox="0 0 24 24" fill="none"><path d="${c.icon}" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="t">${c.label}</div>
+            <div class="d">${c.desc}</div>
+          </div>`).join('')}
+      </div>
+    </section>
+    <section class="sec" id="sec-guides">
+      <h2 class="sec-title" style="font-size:14px">Popular guides</h2>
+      <div class="in-list">
+        ${homeGuides.map(id=>`<div class="row" onclick="selectPage('${id}')"><span>${byId[id].title}</span>${ROW_CHEV}</div>`).join('')}
+      </div>
+    </section>
+    <section class="sec" id="sec-start">
+      <h2 class="sec-title" style="font-size:14px">New to Anchor?</h2>
+      <div class="in-list">
+        <div class="row" onclick="selectPage('charter-why')"><span>Read the Platform Charter first</span>${ROW_CHEV}</div>
+        <div class="row" onclick="selectPage('start-quickstart')"><span>Add login to your app in 15 minutes</span>${ROW_CHEV}</div>
+      </div>
+    </section>
+  `;
+  resetScroll();
+  buildOutline([
+    {id:'sec-explore', label:'Explore by pillar'},
+    {id:'sec-guides', label:'Popular guides'},
+    {id:'sec-start', label:'New to Anchor?'},
+  ]);
+}
+
+// ---------- TOP TABS ----------
+function setActiveTab(tab){
+  document.querySelectorAll('#topnav button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.tab===tab);
+  });
+}
+
+function tabHeader(title, desc){
+  return `<div class="crumb"><span class="link" onclick="goHome()">Home</span><span class="sep">/</span>${title}</div>
+    <h1 class="page-title" style="margin-bottom:2px">${title}</h1><p class="page-desc">${desc}</p>`;
+}
+function cardListFromIds(ids){
+  return `<div class="in-list" style="margin:8px 0 14px">
+    ${ids.map(id=>`<div class="row" onclick="selectPage('${id}')"><span>${byId[id].title}${statusSuffix(byId[id].status)}</span>${ROW_CHEV}</div>`).join('')}
+  </div>`;
+}
+
+function renderTab(tab){
+  if(tab==='api'){
+    contentEl.innerHTML = tabHeader('API Reference','Every endpoint, generated from the same spec that powers the SDKs. Full interactive reference is embedded here in production.')
+      + `<section class="sec" id="sec-overview"><h2 class="sec-title">Overview</h2><p class="muted">Use the management API for users, orgs, and clients; use the runtime API for login, tokens, and sessions. All calls are tenant-scoped.</p></section>`
+      + `<section class="sec" id="sec-list"><h2 class="sec-title">Pages</h2>${cardListFromIds(['dev-apiref','dev-sandbox','dev-debug','dev-webhooks'])}</section>`;
+    resetScroll(); buildOutline([{id:'sec-overview',label:'Overview'},{id:'sec-list',label:'Pages'}]);
+  } else if(tab==='sdk'){
+    contentEl.innerHTML = tabHeader('SDKs','Officially maintained client libraries. Anything not listed here should go through a connector request, not a hand-rolled client.')
+      + `<section class="sec" id="sec-overview"><h2 class="sec-title">Overview</h2><p class="muted">Web and backend SDKs are GA; mobile and CLI are in beta. Pin SDK majors to your Anchor API version.</p></section>`
+      + `<section class="sec" id="sec-list"><h2 class="sec-title">Pages</h2>${cardListFromIds(['sdk-web','sdk-mobile','sdk-backend','sdk-cli'])}</section>`;
+    resetScroll(); buildOutline([{id:'sec-overview',label:'Overview'},{id:'sec-list',label:'Pages'}]);
+  } else if(tab==='adr'){
+    contentEl.innerHTML = tabHeader('Architecture Decision Records','The paper trail behind every major design choice — read before proposing a change that touches core architecture.')
+      + `<section class="sec" id="sec-overview"><h2 class="sec-title">Overview</h2><p class="muted">ADRs are chronological and immutable. New proposals use the template on the Propose page and require platform-team review.</p></section>`
+      + `<section class="sec" id="sec-list"><h2 class="sec-title">Pages</h2>${cardListFromIds(['adr-log','adr-propose'])}</section>`;
+    resetScroll(); buildOutline([{id:'sec-overview',label:'Overview'},{id:'sec-list',label:'Pages'}]);
+  } else if(tab==='status'){
+    contentEl.innerHTML = tabHeader('Status','Live availability is embedded here in production; the pages below cover SLAs and observability in the meantime.')
+      + `<section class="sec" id="sec-overview"><h2 class="sec-title">Overview</h2><p class="muted">Target is 99.95% monthly for login and token issuance. Incidents post to #anchor-status with RTO/RPO notes.</p></section>`
+      + `<section class="sec" id="sec-list"><h2 class="sec-title">Pages</h2>${cardListFromIds(['rel-sla','rel-obs-metrics','rel-obs-alerting','rel-dr'])}</section>`;
+    resetScroll(); buildOutline([{id:'sec-overview',label:'Overview'},{id:'sec-list',label:'Pages'}]);
+  } else if(tab==='roadmap'){
+    renderRoadmap();
+  } else if(tab==='release'){
+    renderReleaseNotes();
+  }
+}
+
+function renderRoadmap(){
+  contentEl.innerHTML = `
+    ${tabHeader('Roadmap','What ships at launch versus what gets built next. Items move into the docs sidebar — with a Beta tag — once they land.')}
+    <section class="sec" id="sec-overview"><h2 class="sec-title">Overview</h2>
+      <p class="muted">Phase 1 is live today. Phase 2 is committed for Q4 2026. Phase 3 is sequenced for H1 2027. <b>Under evaluation</b> is not committed — vote via <b>Suggest a feature</b> on the relevant page.</p>
+    </section>
+    <section class="sec" id="sec-phase-1"><h2 class="sec-title">Phase 1 — Launch scope</h2>
+      <div class="phase-card">
+        <div class="phase-head"><h3>Available now</h3><span class="phase-date">Sept 2026</span></div>
+        <p>Everything currently in the sidebar: core auth, user management, RBAC, baseline compliance, standard integrations, and SDKs.</p>
+        <ul class="phase-list">
+          <li><span class="pill">Auth</span><span>Hosted login, OIDC + SAML SSO, cross-app SSO, TOTP MFA, token rotation &amp; revocation.</span></li>
+          <li><span class="pill">Users</span><span>CRUD API + console, self-service profile &amp; password reset, multi-tenancy &amp; org hierarchy.</span></li>
+          <li><span class="pill">RBAC</span><span>Roles &amp; permissions in tokens, immutable audit log.</span></li>
+          <li><span class="pill">Compliance</span><span>Encryption at rest / in transit, GDPR + DPDP handling, breach notification process.</span></li>
+          <li><span class="pill">SDKs</span><span>Web (JS/React) and backend (Node, Java, Python, .NET) GA; sandbox + API reference live.</span></li>
+        </ul>
+      </div>
+    </section>
+    <section class="sec" id="sec-phase-2"><h2 class="sec-title">Phase 2 — Near-term</h2>
+      <div class="phase-card">
+        <div class="phase-head"><h3>Committed</h3><span class="phase-date">Q4 2026</span></div>
+        <p>Hardening launch scope and closing the most-requested gaps.</p>
+        <ul class="phase-list">
+          <li><span class="pill">Auth</span><span><b>Anomaly &amp; breach detection</b> — flag logins from new devices or breached credentials. <span class="pill amber">In progress</span></span></li>
+          <li><span class="pill">Users</span><span><b>Bulk import / export</b> — CSV operations for large user sets, with dry-run validation.</span></li>
+          <li><span class="pill">Users</span><span><b>SCIM GA</b> — graduate provisioning/de-provisioning from beta; raise sync rate limits. <span class="pill amber">In progress</span></span></li>
+          <li><span class="pill">RBAC</span><span><b>Policy engine GA</b> — conditional rules beyond flat roles, with dry-run evaluation.</span></li>
+          <li><span class="pill">Compliance</span><span><b>SOC 2 Type II</b> — complete observation window; publish report to eng. <span class="pill amber">In progress</span></span></li>
+          <li><span class="pill">DevTools</span><span><b>Sandbox self-serve</b> — one-click disposable tenants, no ticket required.</span></li>
+          <li><span class="pill gray">Migration</span><span><b>AWS Cognito guide</b> — user + password-hash import runbook with cutover checklist.</span></li>
+        </ul>
+      </div>
+    </section>
+    <section class="sec" id="sec-phase-3"><h2 class="sec-title">Phase 3 — Later</h2>
+      <div class="phase-card">
+        <div class="phase-head"><h3>Sequenced</h3><span class="phase-date">H1 2027</span></div>
+        <p>Larger integrations and governance features that need Phase 1/2 stable first.</p>
+        <ul class="phase-list">
+          <li><span class="pill">RBAC</span><span><b>Break-glass emergency access</b> — time-boxed elevation with full logging and dual approval.</span></li>
+          <li><span class="pill">Compliance</span><span><b>Data residency</b> — regional storage guarantees per tenant.</span></li>
+          <li><span class="pill">Integrations</span><span><b>National eID</b> — Singpass, Aadhaar / DigiLocker, eIDAS behind the connector interface.</span></li>
+          <li><span class="pill">Integrations</span><span><b>Decentralized identity</b> — Privy and Web3 wallet login as an alternate factor.</span></li>
+          <li><span class="pill">DevTools</span><span><b>Service catalog + status dashboard</b> — live API status embedded in docs.</span></li>
+          <li><span class="pill gray">Migration</span><span><b>WorkOS guide</b> — org, role, and session mapping with zero-downtime cutover.</span></li>
+        </ul>
+      </div>
+    </section>
+    <section class="sec" id="sec-eval"><h2 class="sec-title">Under evaluation</h2>
+      <div class="phase-card">
+        <div class="phase-head"><h3>Not committed</h3><span class="phase-date">2027+</span></div>
+        <p>Ranked by RFC votes. Tell us which one unblocks you.</p>
+        <ul class="phase-list">
+          <li><span class="pill gray">RBAC</span><span>Fine-grained ABAC — attribute conditions on resources, not just roles.</span></li>
+          <li><span class="pill gray">Auth</span><span>Step-up auth SDK widget — per-action MFA challenge without a redirect.</span></li>
+          <li><span class="pill gray">Observability</span><span>Audit streaming to SIEM — push audit events to Splunk / Datadog.</span></li>
+        </ul>
+      </div>
+    </section>
+    <section class="sec" id="sec-request"><h2 class="sec-title">Request a change</h2>
+      <div class="callout">
+        Want something reprioritized? Use <strong>Suggest a feature</strong> on the relevant docs page, or open an RFC — see <span class="link" onclick="selectPage('charter-diy')">Before You Build It Yourself</span>.
+      </div>
+    </section>
+  `;
+  resetScroll();
+  buildOutline([
+    {id:'sec-overview', label:'Overview'},
+    {id:'sec-phase-1', label:'Phase 1 — Launch'},
+    {id:'sec-phase-2', label:'Phase 2 — Q4 2026'},
+    {id:'sec-phase-3', label:'Phase 3 — H1 2027'},
+    {id:'sec-eval', label:'Under evaluation'},
+    {id:'sec-request', label:'Request a change'},
+  ]);
+}
+
+function renderReleaseNotes(){
+  const releases = [
+    { ver:'v2026.09.2', date:'Sep 5, 2026', hl:'Delegated admin and PII masking graduate to beta for all tenants; docs shell relaunched.', items:[
+      ['New','Delegated admin (beta) — orgs can manage their own users and roles without a platform ticket.'],
+      ['New','PII classification & log masking (beta) rolled out to all tenants; email and phone auto-redacted.'],
+      ['Improved','Docs shell relaunched: compact layout, minimal meta strip, right-side outline with scroll-spy.'],
+      ['Fixed','Invite-email link expiry extended from 24h to 72h; expired links now show a resend action.'],
+      ['Security','Session cookie hardened with __Host- prefix and Partitioned flag in embedded flows.'],
+    ]},
+    { ver:'v2026.09.1', date:'Sep 1, 2026', hl:'Stability fixes for token rotation and SCIM sync throughput.', items:[
+      ['Fixed','Race condition in refresh-token rotation under high concurrency — rotation now atomic per device.'],
+      ['Improved','SCIM (beta) rate limit raised to 600 req/min for large directory syncs.'],
+      ['Fixed','Cross-app SSO logout now revokes all app sessions instead of only the initiating app.'],
+    ]},
+    { ver:'v2026.09.0', date:'Aug 28, 2026', hl:'Embedded login and device management enter beta.', items:[
+      ['New','Embedded Login SDK (beta) — render login inside your UI; redirect remains recommended default.'],
+      ['New','Device & session management (beta) — users can list and revoke active devices.'],
+      ['Improved','Hosted login page: faster cold start (~180ms p95 improvement) and clearer MFA enrollment.'],
+      ['Fixed','SAML NameID now stable across re-auth for Azure AD–federated orgs.'],
+    ]},
+    { ver:'v2026.08.3', date:'Aug 22, 2026', hl:'Phishing-resistant MFA and KYC connectors land in beta.', items:[
+      ['New','WebAuthn / Passkeys (beta) for phishing-resistant MFA and passwordless.'],
+      ['New','KYC connectors for Persona and Onfido (beta) behind the shared adapter interface.'],
+      ['Improved','MFA policy preview — org admins can dry-run enforcement before rolling out.'],
+    ]},
+    { ver:'v2026.08.2', date:'Aug 15, 2026', hl:'Compliance and data-handling milestones.', items:[
+      ['New','Soft-delete & anonymization (beta) — deactivated accounts anonymized on a 30-day schedule.'],
+      ['New','Retention policies (beta) — per-data-category TTLs with per-org overrides.'],
+      ['Improved','Key rotation runbook published; signing-key rotation is now zero-downtime.'],
+      ['Fixed','Audit log export pagination skipped rows past 50k events — now cursor-stable.'],
+    ]},
+    { ver:'v2026.08.1', date:'Aug 5, 2026', hl:'Multi-region failover enters beta; ADR process opens up.', items:[
+      ['New','Multi-region failover (beta) — active-passive with published RTO ≤ 15 min, RPO ≤ 1 min.'],
+      ['Improved','ADR log opened to all engineering teams, not just platform.'],
+      ['Fixed','Refresh-token reuse detection false-positived on mobile network flaps — window widened to 10s.'],
+    ]},
+    { ver:'v2026.08.0', date:'Jul 28, 2026', hl:'Migration and access-review betas.', items:[
+      ['New','Okta / Auth0 migration guide (beta) — tenant, rule, and user mapping with import scripts.'],
+      ['New','Access review & recertification (beta) — periodic prompts to confirm standing access.'],
+      ['Improved','Rate-limit headers now include tenant quota and reset time on all management APIs.'],
+    ]},
+    { ver:'v2026.07.1', date:'Jul 10, 2026', hl:'Anchor v1 general availability.', items:[
+      ['New','Anchor v1 GA — core Auth, User Management, RBAC, baseline Compliance, and initial Integrations launched org-wide.'],
+      ['New','Backend SDKs GA for Node, Java, Python, and .NET; Web SDK GA for JS/React.'],
+      ['Improved','Runbooks published for incident response, on-call escalation, and common failure modes.'],
+    ]},
+    { ver:'v2026.07.0', date:'Jul 1, 2026', hl:'Release candidate frozen for GA hardening.', items:[
+      ['New','v1 release candidate cut; breaking-change freeze in effect.'],
+      ['Fixed','Last RC blockers: OIDC PKCE S256 enforcement and session idle-timeout drift.'],
+    ]},
+  ];
+  contentEl.innerHTML = tabHeader('Release Notes','Every ship since launch, newest first. Subscribe from Developer Tools → Webhooks to get these as events instead of checking back here.')
+    + releases.map((r,i)=>`
+      <section class="sec" id="sec-${r.ver.replace(/\./g,'-')}">
+        <div class="release">
+          <div class="release-dot"></div>
+          <div><span class="release-ver">${r.ver}</span><span class="release-date">${r.date}</span></div>
+          <div class="release-hl">${r.hl}</div>
+          <ul>${r.items.map(([tag,text])=>`<li><span class="tag">${tag}</span><span>${text}</span></li>`).join('')}</ul>
+        </div>
+      </section>
+    `).join('');
+  resetScroll();
+  buildOutline(releases.map(r=>({id:'sec-'+r.ver.replace(/\./g,'-'), label:r.ver})));
+}
+
+document.getElementById('topnav').addEventListener('click', e=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const tab = btn.dataset.tab;
+  setActiveTab(tab);
+  if(tab==='docs'){ goHome(); } else { renderTab(tab); }
+});
+
+// ---------- VERSION DROPDOWN (SVG chevron, no text glyph) ----------
+const versionMenu = document.getElementById('versionMenu');
+const versionPill = document.getElementById('versionPillLabel');
+function toggleVersionMenu(e){
+  if(e) e.stopPropagation();
+  versionMenu.classList.toggle('hidden');
+  versionPill.classList.toggle('open');
+}
+function selectVersion(v){
+  document.getElementById('verLabel').textContent = v;
+  versionMenu.classList.add('hidden');
+  versionPill.classList.remove('open');
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.version-pill-wrap')){ versionMenu.classList.add('hidden'); versionPill.classList.remove('open'); }
+  const fb = e.target.closest('.fb-wrap');
+  if(!fb){
+    let changed = false;
+    for(const k of Object.keys(feedbackState)){ if(k.endsWith('-menu') && feedbackState[k]){ feedbackState[k]=false; changed=true; } }
+  }
+});
+
+// ---------- CMD+K ----------
+const overlay = document.getElementById('cmdkOverlay');
+const cmdkInput = document.getElementById('cmdkInput');
+const cmdkResults = document.getElementById('cmdkResults');
+let cmdkMatches = [];
+let cmdkSelected = 0;
+
+function isCmdkOpen(){ return !overlay.classList.contains('hidden'); }
+function openCmdk(){
+  overlay.classList.remove('hidden');
+  cmdkInput.value = '';
+  cmdkFilter('');
+  setTimeout(()=>cmdkInput.focus(),10);
+}
+function closeCmdk(){
+  overlay.classList.add('hidden');
+}
+function cmdkFilter(q){
+  const query = q.trim().toLowerCase();
+  cmdkMatches = flatOrder.filter(id=>{
+    const n = byId[id];
+    return !query || n.title.toLowerCase().includes(query) || n.parents.join(' ').toLowerCase().includes(query);
+  }).slice(0,40);
+  cmdkSelected = 0;
+  renderCmdkResults();
+}
+function renderCmdkResults(){
+  cmdkResults.innerHTML = cmdkMatches.length ? cmdkMatches.map((id,i)=>{
+    const n = byId[id];
+    const sel = i === cmdkSelected;
+    return `<div class="cmdk-row ${sel ? 'sel' : ''}" data-i="${i}" onclick="cmdkGo('${id}')" onmouseenter="cmdkHover(${i})">
+      <span class="trunc">${n.title}</span>
+      <span class="parents">${n.parents.join(' / ')}</span>
+    </div>`;
+  }).join('') : `<div class="cmdk-empty">No matches. Try a different term.</div>`;
+}
+function cmdkHover(i){ cmdkSelected = i; renderCmdkResults(); }
+function cmdkGo(id){ closeCmdk(); selectPage(id); }
+
+// ---------- CHAT (docked right column inside .layout, placeholder send) ----------
+function isChatOpen(){ return !document.getElementById('chatSide').classList.contains('hidden'); }
+function openChat(){
+  document.querySelector('.layout').classList.add('chat-open');
+  document.getElementById('chatSide').classList.remove('hidden');
+  setTimeout(()=>{ const i = document.getElementById('chatInput'); if(i) i.focus(); },10);
+}
+function closeChat(){
+  document.querySelector('.layout').classList.remove('chat-open');
+  document.getElementById('chatSide').classList.add('hidden');
+}
+function toggleChat(){ isChatOpen() ? closeChat() : openChat(); }
+function sendChat(){
+  const input = document.getElementById('chatInput');
+  const text = (input.value || '').trim();
+  if(!text) return;
+  const msgs = document.getElementById('chatMsgs');
+  const el = document.createElement('div');
+  el.className = 'chat-msg me';
+  el.textContent = text;
+  msgs.appendChild(el);
+  input.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function scrollSelectedIntoView(){
+  const el = cmdkResults.querySelector(`[data-i="${cmdkSelected}"]`);
+  if(el) el.scrollIntoView({ block: 'nearest' });
+}
+
+document.addEventListener('keydown', e=>{
+  const fbOpen = !document.getElementById('fbOverlay').classList.contains('hidden');
+  if(fbOpen){ if(e.key==='Escape') closeFbOverlay(); return; }
+  if(isChatOpen()){
+    if(e.key==='Escape') closeChat();
+    return;
+  }
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){
+    e.preventDefault();
+    isCmdkOpen() ? closeCmdk() : openCmdk();
+    return;
+  }
+  if(!isCmdkOpen()) return;
+  if(e.key==='Escape'){ closeCmdk(); return; }
+  if(e.key==='ArrowDown'){
+    e.preventDefault();
+    if(cmdkMatches.length){ cmdkSelected = Math.min(cmdkSelected+1, cmdkMatches.length-1); renderCmdkResults(); scrollSelectedIntoView(); }
+    return;
+  }
+  if(e.key==='ArrowUp'){
+    e.preventDefault();
+    if(cmdkMatches.length){ cmdkSelected = Math.max(cmdkSelected-1, 0); renderCmdkResults(); scrollSelectedIntoView(); }
+    return;
+  }
+  if(e.key==='Enter'){
+    if(cmdkMatches[cmdkSelected]) cmdkGo(cmdkMatches[cmdkSelected]);
+  }
+});
+
+// init
+goHome();
+</script>
+</body>
+</html>

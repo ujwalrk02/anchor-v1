@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anchor — Internal Identity Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1B1F27; --dim:#5B6472; --faint:#8B93A3;
+  --surface:#F7F8FA; --raised:#F0F2F5;
+  --line:#E3E6EB; --line-soft:#EDEFF2;
+  --accent:#045E96; --accent-soft:#E6F1F7; --accent-ink:#034A78;
+  --beta-ink:#93610C; --beta-bg:#FFF4E3; --beta-line:#F2DDAF;
+  --dep-ink:#912018; --dep-bg:#FEF3F2; --dep-line:#FECDCA;
+  --ok:#1F8A5B;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+  --sans:'IBM Plex Sans',ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);font-size:13px;line-height:1.5;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
+svg{display:block}
+
+/* ---- top strip (same tokens as docs topbar) ---- */
+.lp-top{height:40px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 12px;gap:8px;background:#fff;position:sticky;top:0;z-index:30}
+.brand{display:flex;align-items:center;gap:6px}
+.brand svg{width:17px;height:17px}
+.brand b{font-size:13px;font-weight:600}
+.brand-sub{font-family:var(--mono);font-size:10px;color:var(--faint);padding-left:8px;border-left:1px solid var(--line);white-space:nowrap}
+.spacer{flex:1}
+.btn{border:1px solid var(--line);background:#fff;color:var(--dim);font-size:12.5px;padding:5px 13px;border-radius:6px;cursor:pointer;font-family:var(--sans);text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--accent);color:var(--accent-ink)}
+.btn-primary{background:var(--accent);color:#fff;border:1px solid var(--accent);border-radius:6px;padding:5px 14px;font-size:12.5px;cursor:pointer;font-family:var(--sans);text-decoration:none;display:inline-block}
+.btn-primary:hover{background:var(--accent-ink)}
+
+.lp-wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ---- hero (two-column: copy + mock dashboard) ---- */
+.lp-hero-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:28px;align-items:center;padding:40px 0 28px}
+@media(max-width:860px){.lp-hero-grid{grid-template-columns:1fr}}
+.lp-hero h1{font-size:24px;font-weight:600;letter-spacing:-.01em;margin:0 0 6px;line-height:1.25}
+.lp-hero p{color:var(--dim);font-size:13.5px;margin:0}
+.lp-hero .cta-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.lp-kicker{font-family:var(--mono);font-size:10px;color:var(--accent-ink);background:var(--accent-soft);border-radius:4px;padding:1px 6px;display:inline-block;margin-bottom:10px}
+
+/* ---- mock dashboard (static UI mock) ---- */
+.dash{border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 16px 40px rgba(16,24,40,.10);overflow:hidden}
+.dash-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--line)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line);flex-shrink:0}
+.dash-title{font-family:var(--mono);font-size:11px;color:var(--faint);margin-left:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-pill{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ok);background:#E7F4ED;border-radius:4px;padding:1px 6px;white-space:nowrap}
+.dash-body{padding:12px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stat{border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.stat .n{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.stat .l{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:2px}
+.act{border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.act-row{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:12px;color:var(--dim);border-top:1px solid var(--line-soft)}
+.act-row:first-child{border-top:0}
+.act-dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex-shrink:0}
+.act-dot.amber{background:var(--beta-ink)}
+.act-row code{font-family:var(--mono);font-size:11px;color:var(--ink)}
+.act-row time{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--faint);white-space:nowrap}
+
+/* ---- sections ---- */
+.lp-sec{padding:28px 0;border-top:1px solid var(--line-soft)}
+.lp-sec h2{font-size:14px;font-weight:600;margin:0 0 6px}
+.lp-sec .sub{color:var(--dim);font-size:13px;margin:0 0 14px;max-width:680px}
+
+/* ---- two-column: checklist + code panel ---- */
+.lp-two{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:860px){.lp-two{grid-template-columns:1fr}}
+.check{list-style:none;margin:0;padding:0}
+.check li{display:flex;gap:8px;padding:7px 0;font-size:13px;color:var(--dim);border-bottom:1px solid var(--line-soft)}
+.check li:last-child{border-bottom:0}
+.check .tick{color:var(--ok);font-weight:700;flex-shrink:0}
+.check b{color:var(--ink);font-weight:600}
+.code-panel{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.code-tabs{display:flex;gap:2px;padding:5px 6px;border-bottom:1px solid var(--line);background:var(--surface)}
+.code-tabs button{border:0;background:transparent;color:var(--dim);font-size:12px;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:var(--sans)}
+.code-tabs button:hover{background:var(--raised);color:var(--ink)}
+.code-tabs button.active{background:var(--accent-soft);color:var(--accent-ink)}
+.code-panel pre{margin:0;padding:14px;font-family:var(--mono);font-size:12px;line-height:1.6;color:var(--ink);overflow-x:auto;background:#fff;min-height:180px}
+.in-list{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:6px}
+.in-list .row{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:13px;color:var(--dim)}
+.feat-desc{color:var(--dim);font-size:13px;margin:0 0 10px;max-width:680px}
+
+/* ---- capability window ---- */
+.win{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 12px 32px rgba(16,24,40,.08)}
+.win-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--line)}
+.win-title{font-family:var(--mono);font-size:11px;color:var(--faint);margin-left:4px}
+.win-body .code-panel{border:0;border-radius:0}
+.win-body .code-panel pre{min-height:150px}
+
+/* ---- feature grid (reuse home-card, plus hover lift) ---- */
+.home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(max-width:900px){.home-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.home-grid{grid-template-columns:1fr}}
+.home-card{border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff;cursor:pointer}
+.home-card:hover{border-color:var(--accent)}
+.home-card svg{width:18px;height:18px;color:var(--accent);margin-bottom:6px}
+.home-card .t{font-size:13px;font-weight:600;margin-bottom:2px}
+.home-card .d{font-size:11.5px;color:var(--dim);line-height:1.45}
+
+/* ---- footer (same markup as docs) ---- */
+.footer{border-top:1px solid var(--line);background:#fff;padding:28px 0 20px;font-size:12px;color:var(--dim)}
+.f-inner{max-width:1080px;margin:0 auto;padding:0 20px;width:100%}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;gap:24px 32px}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.footer-grid{grid-template-columns:1fr}}
+.f-brand{display:flex;align-items:center;gap:6px;color:var(--ink);font-size:13px;font-weight:600}
+.f-brand svg{width:17px;height:17px}
+.f-tag{font-size:12px;color:var(--dim);margin:8px 0;max-width:260px;line-height:1.5}
+.f-copy{font-size:11.5px;color:var(--faint)}
+.f-head{font-size:12px;font-weight:600;color:var(--ink);margin:0 0 8px}
+.f-link{display:block;font-size:12px;color:var(--dim);text-decoration:none;padding:2px 0}
+.f-link:hover{color:var(--accent-ink);text-decoration:underline}
+.f-bottom{margin:20px 0 0;padding-top:12px;border-top:1px solid var(--line-soft);display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:11.5px;color:var(--faint)}
+.f-bottom a{color:var(--dim);text-decoration:none}
+.f-bottom a:hover{color:var(--accent-ink);text-decoration:underline}
+.f-bottom .sep{color:var(--line)}
+.f-bottom .copy{margin-left:auto;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<header class="lp-top">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6V12C4 17 7.5 21 12 22C16.5 21 20 17 20 12V6L12 2Z" stroke="#045E96" stroke-width="1.6"/><circle cx="12" cy="11" r="2.4" stroke="#045E96" stroke-width="1.6"/><path d="M12 13.4V16.5" stroke="#045E96" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <b>Anchor</b>
+    <span class="brand-sub">Internal Identity Platform</span>
+  </div>
+  <div class="spacer"></div>
+</header>
+
+<div class="lp-wrap">
+  <section class="lp-hero-grid">
+    <div class="lp-hero">
+      <span class="lp-kicker">v2026.09 — now live</span>
+      <h1>Identity, centralized for every internal app.</h1>
+      <p>Anchor owns login, SSO, MFA, users, and access control — so product teams stop rebuilding auth and start shipping. One hosted login, one token service, one audit trail.</p>
+      <div class="cta-row">
+        <a class="btn-primary" href="anchor-docs.html">Open the docs →</a>
+        <a class="btn" href="anchor-docs.html">Add login in 15 minutes</a>
+      </div>
+    </div>
+    <div class="dash" aria-hidden="true">
+      <div class="dash-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="dash-title">anchor console — acme</span>
+        <span class="dash-pill">● operational</span>
+      </div>
+      <div class="dash-body">
+        <div class="stat-grid">
+          <div class="stat"><div class="n">48.2k</div><div class="l">monthly users</div></div>
+          <div class="stat"><div class="n">99.98%</div><div class="l">login success</div></div>
+          <div class="stat"><div class="n">87%</div><div class="l">MFA enrolled</div></div>
+        </div>
+        <div class="act">
+          <div class="act-row"><span class="act-dot"></span><code>oidc.login</code><span>cross-app SSO</span><time>2s ago</time></div>
+          <div class="act-row"><span class="act-dot"></span><code>token.rotated</code><span>device mbp-04</span><time>41s ago</time></div>
+          <div class="act-row"><span class="act-dot amber"></span><code>mfa.step_up</code><span>billing:refund</span><time>3m ago</time></div>
+          <div class="act-row"><span class="act-dot"></span><code>scim.sync</code><span>214 users</span><time>9m ago</time></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec">
+    <h2>An identity platform for developers and agents</h2>
+    <p class="sub">Drop in the SDK, redirect to hosted login, validate the token. Defaults are production-safe; overrides are per-org and audit-logged.</p>
+    <div class="lp-two">
+      <ul class="check">
+        <li><span class="tick">✓</span><span><b>Hosted login + SDKs</b> — no auth UI to build or patch</span></li>
+        <li><span class="tick">✓</span><span><b>OIDC &amp; SAML SSO</b> with cross-app sessions</span></li>
+        <li><span class="tick">✓</span><span><b>TOTP + WebAuthn MFA</b> with per-org policies</span></li>
+        <li><span class="tick">✓</span><span><b>Roles in tokens</b> plus an immutable audit log</span></li>
+        <li><span class="tick">✓</span><span><b>Sandbox tenants</b> and request-level debug logs</span></li>
+        <li><span class="tick">✓</span><span><b>Webhooks</b> for lifecycle events — no polling</span></li>
+      </ul>
+      <div class="code-panel">
+        <div class="code-tabs" id="lpCodeTabs">
+          <button data-lang="js" class="active" onclick="lpCodeTab('js')">JavaScript</button>
+          <button data-lang="py" onclick="lpCodeTab('py')">Python</button>
+          <button data-lang="curl" onclick="lpCodeTab('curl')">cURL</button>
+        </div>
+        <pre><code id="lpCode"></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec">
+    <h2>Explore by capability</h2>
+    <p class="sub">Pick a pillar — every sample runs against your sandbox tenant.</p>
+    <p class="feat-desc" id="lpFeatDesc"></p>
+    <div class="win">
+      <div class="win-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="win-title">anchor — sandbox</span>
+      </div>
+      <div class="code-tabs" id="lpFeatTabs">
+        <button data-feat="auth" class="active" onclick="lpFeature('auth')">Auth</button>
+        <button data-feat="sso" onclick="lpFeature('sso')">SSO</button>
+        <button data-feat="mfa" onclick="lpFeature('mfa')">MFA</button>
+        <button data-feat="rbac" onclick="lpFeature('rbac')">RBAC</button>
+        <button data-feat="webhooks" onclick="lpFeature('webhooks')">Webhooks</button>
+      </div>
+      <div class="win-body">
+        <div class="code-panel"><pre><code id="lpFeatCode"></code></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec">
+    <h2>Everything around the token</h2>
+    <p class="sub">Six pillars, one platform team, per-pillar SLA commitments.</p>
+    <div class="home-grid lp-grid" id="lpGrid"></div>
+  </section>
+</div>
+
+<footer class="footer">
+ <div class="f-inner">
+  <div class="footer-grid">
+    <div>
+      <div class="f-brand">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6V12C4 17 7.5 21 12 22C16.5 21 20 17 20 12V6L12 2Z" stroke="#045E96" stroke-width="1.6"/><circle cx="12" cy="11" r="2.4" stroke="#045E96" stroke-width="1.6"/><path d="M12 13.4V16.5" stroke="#045E96" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span>Anchor</span>
+      </div>
+      <div class="f-tag">Internal identity platform — login, SSO, MFA, users, and access control, built once.</div>
+      <div class="f-copy">&copy; 2026 Fortunesoft IT Innovations</div>
+    </div>
+    <div>
+      <div class="f-head">Learn</div>
+      <a class="f-link" href="anchor-docs.html">Quickstart</a>
+      <a class="f-link" href="anchor-docs.html">Core Concepts</a>
+      <a class="f-link" href="anchor-docs.html">Architecture</a>
+      <a class="f-link" href="anchor-docs.html">Environments</a>
+    </div>
+    <div>
+      <div class="f-head">API Reference</div>
+      <a class="f-link" href="anchor-docs.html">Authentication</a>
+      <a class="f-link" href="anchor-docs.html">Users</a>
+      <a class="f-link" href="anchor-docs.html">RBAC</a>
+      <a class="f-link" href="anchor-docs.html">Webhooks</a>
+    </div>
+    <div>
+      <div class="f-head">Community</div>
+      <a class="f-link" href="anchor-docs.html">Platform Charter</a>
+      <a class="f-link" href="anchor-docs.html">RFC Process</a>
+      <a class="f-link" href="anchor-docs.html">Support</a>
+      <a class="f-link" href="anchor-docs.html">Status</a>
+    </div>
+    <div>
+      <div class="f-head">More</div>
+      <a class="f-link" href="anchor-docs.html">Roadmap</a>
+      <a class="f-link" href="anchor-docs.html">Release Notes</a>
+      <a class="f-link" href="anchor-docs.html">Privacy Policy</a>
+      <a class="f-link" href="anchor-docs.html">Terms of Use</a>
+      <a class="f-link" href="anchor-docs.html">Security</a>
+    </div>
+  </div>
+  <div class="f-bottom">
+    <a href="anchor-docs.html">Privacy Policy</a>
+    <span class="sep">|</span>
+    <a href="anchor-docs.html">Terms of Use</a>
+    <span class="sep">|</span>
+    <a href="anchor-docs.html">Security</a>
+    <span class="copy">&copy; 2026 Fortunesoft IT Innovations</span>
+  </div>
+ </div>
+</footer>
+
+<script>
+var lpSamples = {
+  js: "import { Anchor } from '@anchor/web';\n\nconst anchor = new Anchor({ tenant: 'acme-sandbox' });\n\n// Redirect to hosted login — no auth UI to build\nawait anchor.login({ redirectUri: window.location.origin + '/callback' });",
+  py: "from anchor import Anchor\n\nanchor = Anchor(tenant='acme-sandbox')\n\n# Validate the access token server-side\nsession = anchor.tokens.verify(access_token)\nprint(session['sub'], session['roles'])",
+  curl: "curl https://anchor.internal/v1/token \\\n  -d grant_type=authorization_code \\\n  -d code=$CODE \\\n  -d redirect_uri=$APP_URL/callback"
+};
+function lpCodeTab(lang){
+  document.querySelectorAll('#lpCodeTabs button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  document.getElementById('lpCode').textContent = lpSamples[lang];
+}
+
+var lpFeatures = {
+  auth: { desc: 'Hosted login via redirect — the default for new integrations. Authorization code flow with PKCE.', code: "await anchor.login({ redirectUri: APP_URL + '/callback' });\n// ...user returns with ?code=...\nconst tokens = await anchor.exchange(code);" },
+  sso: { desc: 'Single sign-on with OIDC brokering — one session shared across every registered internal app.', code: "curl https://anchor.internal/v1/authorize \\\n  -d client_id=$CLIENT_ID \\\n  -d response_type=code \\\n  -d scope='openid profile'" },
+  mfa: { desc: 'Step up with TOTP by default, WebAuthn for phishing resistance. Enforce per-org or per-action.', code: "const ok = await anchor.mfa.verify({ factor: 'totp', code });\nif (!ok) throw new Error('second factor required');" },
+  rbac: { desc: 'Roles travel in the token. Check a permission, not a role name, at the enforcement point.', code: "if (!session['permissions'].includes('billing:refund')):\n    raise Forbidden('missing billing:refund')" },
+  webhooks: { desc: 'Subscribe to user and org lifecycle events instead of polling the management API.', code: "anchor.webhooks.verify(req.body, req.headers['x-anchor-sig']);\n// events: user.created, user.disabled, role.changed" }
+};
+function lpFeature(key){
+  document.querySelectorAll('#lpFeatTabs button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.feat === key);
+  });
+  document.getElementById('lpFeatDesc').textContent = lpFeatures[key].desc;
+  document.getElementById('lpFeatCode').textContent = lpFeatures[key].code;
+}
+
+var lpCards = [
+  { t: 'Authentication', d: 'Login, SSO, MFA, sessions, and token handling.', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v2' },
+  { t: 'User Management', d: 'Accounts, orgs, tenancy, and provisioning.', icon: 'M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-4a4 4 0 100-8 4 4 0 000 8zm6 4a4 4 0 100-8 4 4 0 000 8z' },
+  { t: 'Roles & Access Control', d: 'Roles, permissions, policy engine, audit trail.', icon: 'M12 15v2m-3 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm1-10V7a2 2 0 114 0v2' },
+  { t: 'Compliance & Security', d: 'Certifications, encryption, data governance.', icon: 'M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z' },
+  { t: 'Integrations', d: 'Connector framework, federation, KYC, social login.', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+  { t: 'Clients & SDKs', d: 'Web, mobile, backend, and CLI libraries.', icon: 'M8 9l-4 3 4 3m8-6l4 3-4 3M13 5l-2 14' }
+];
+document.getElementById('lpGrid').innerHTML = lpCards.map(function(c){
+  return '<div class="home-card" onclick="location.href=\'anchor-docs.html\'"><svg viewBox="0 0 24 24" fill="none"><path d="' + c.icon + '" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="t">' + c.t + '</div><div class="d">' + c.d + '</div></div>';
+}).join('');
+
+lpCodeTab('js');
+lpFeature('auth');
+</script>
+</body>
+</html>
